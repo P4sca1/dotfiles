@@ -1,0 +1,17 @@
+packages:
+  darwin:
+    brews:
+      - helix
+      - bat
+      - fzf
+      - fd
+      - n
+      - gh
+      - jq
+      - go
+      - hcloud
+      - kubectl
+      - helm
+    casks:
+      - 1password
+      - 1password-cli
