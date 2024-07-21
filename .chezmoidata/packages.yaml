@@ -9,9 +9,11 @@ packages:
       - gh
       - jq
       - go
+      - gopls
       - hcloud
       - kubectl
       - helm
+      - taplo
     casks:
       - 1password
       - 1password-cli
