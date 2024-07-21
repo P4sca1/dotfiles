@@ -36,4 +36,4 @@ chezmoi docs: https://www.chezmoi.io/user-guide/command-overview/
 Helix requires language servers and tools like formatters to be installed and available in $PATH.
 Dependencies that are available on NPM are managed using a `package.json` in `dot_config/helix/package.json`.
 Versions of dependencies are fixed and need to be updated manually.
-
+Use `pnpm install --lockfile-only` after updating `package.json` to generate an updated `pnpm-lock.yaml`.
