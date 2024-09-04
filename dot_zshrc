@@ -1,0 +1,26 @@
+# Aliases
+alias bat="bat --theme=\$(defaults read -globalDomain AppleInterfaceStyle &> /dev/null && echo default || echo GitHub)"
+
+# Fix GPG not asking for a password
+export GPG_TTY=$(tty)
+
+# Enable colorized terminal output, e.g. for ls
+export CLICOLOR=1
+
+# pnpm
+export PNPM_HOME="$HOME/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# krew https://krew.sigs.k8s.io
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# Add Helix dependencies to $PATH
+export PATH="$HOME/.config/helix/node_modules/.bin:$PATH"
+
+# 1Password CLI plugins
+# https://developer.1password.com/docs/cli/shell-plugins/?utm_medium=organic&utm_source=oph&utm_campaign=macos
+source /Users/pascal/.config/op/plugins.sh
