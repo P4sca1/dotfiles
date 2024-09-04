@@ -1,0 +1,9 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -ex
+
+# Install Node.js and enable corepack
+n install 20
+corepack enable
+{{ end -}}

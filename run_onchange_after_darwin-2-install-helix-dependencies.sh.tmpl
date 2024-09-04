@@ -1,8 +1,12 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
+set -ex
+
 # Rerun this script whenever the pnpm-lock.yaml file changes
 # pnpm-lock.yaml hash: {{ include "dot_config/helix/pnpm-lock.yaml" | sha256sum }}
+
+# Install dependencies
 cd {{ joinPath .chezmoi.sourceDir "dot_config" "helix" | quote }}
 pnpm install --frozen-lockfile
 {{ end -}}

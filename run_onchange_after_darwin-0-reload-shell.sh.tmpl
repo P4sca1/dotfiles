@@ -1,0 +1,8 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -ex
+
+# Reload shell to apply new env variables
+exec $SHELL
+{{ end -}}
