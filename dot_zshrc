@@ -23,4 +23,7 @@ export PATH="$HOME/.config/helix/node_modules/.bin:$PATH"
 
 # 1Password CLI plugins
 # https://developer.1password.com/docs/cli/shell-plugins/?utm_medium=organic&utm_source=oph&utm_campaign=macos
-source /Users/pascal/.config/op/plugins.sh
+if [ -f /Users/pascal/.config/op/plugins.sh ]; then
+  source /Users/pascal/.config/op/plugins.sh
+fi
+
