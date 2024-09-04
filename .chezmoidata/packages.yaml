@@ -18,4 +18,3 @@ packages:
     casks:
       - 1password-cli
       - zed
-      - orbstack
