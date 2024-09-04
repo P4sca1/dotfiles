@@ -15,5 +15,6 @@ packages:
       - helm
       - taplo
     casks:
-      - 1password
       - 1password-cli
+      - zed
+      - orbstack
