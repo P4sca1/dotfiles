@@ -7,6 +7,6 @@ set -ex
 # pnpm-lock.yaml hash: {{ include "dot_config/helix/pnpm-lock.yaml" | sha256sum }}
 
 # Install dependencies
-cd {{ joinPath .chezmoi.sourceDir "dot_config" "helix" | quote }}
+cd /Users/pascal/.config/helix/
 pnpm install --frozen-lockfile
 {{ end -}}
