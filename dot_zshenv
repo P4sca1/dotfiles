@@ -1,0 +1,14 @@
+# Add homewbrew sbin PATH
+export PATH="/usr/local/sbin:$PATH"
+
+# Setup golang.
+export PATH="/Users/pascal/go/bin:$PATH"
+export GOPATH=/Users/pascal/go
+
+# Use 1Password SSH agent
+# https://developer.1password.com/docs/ssh/agent/compatibility
+export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+# https://github.com/tj/n#installation
+export N_PREFIX="/Users/pascal"
+export PATH="/Users/pascal/bin:$PATH"
