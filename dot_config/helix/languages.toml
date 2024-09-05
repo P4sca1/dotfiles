@@ -47,3 +47,8 @@ language-servers = ["typescript-language-server"]
 name = "@vue/typescript-plugin"
 location = "/Users/pascal/.config/helix/node_modules/@vue/typescript-plugin"
 languages = ["vue"]
+
+[[language]]
+name = "markdown"
+formatter = { command = "dprint", args = ["fmt", "--stdin", "md"]}
+auto-format = true
