@@ -18,9 +18,6 @@ esac
 # krew https://krew.sigs.k8s.io
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
-# Add Helix dependencies to $PATH
-export PATH="$HOME/.config/helix/node_modules/.bin:$PATH"
-
 # 1Password CLI plugins
 # https://developer.1password.com/docs/cli/shell-plugins/?utm_medium=organic&utm_source=oph&utm_campaign=macos
 if [ -f /Users/pascal/.config/op/plugins.sh ]; then

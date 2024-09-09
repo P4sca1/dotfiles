@@ -12,3 +12,9 @@ export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agen
 # https://github.com/tj/n#installation
 export N_PREFIX="/Users/pascal"
 export PATH="/Users/pascal/bin:$PATH"
+
+# Add Helix dependencies to $PATH
+export PATH="$HOME/.config/helix/node_modules/.bin:$PATH"
+
+# Setup default editor
+export EDITOR="hx"
