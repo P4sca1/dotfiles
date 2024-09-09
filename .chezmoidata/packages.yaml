@@ -17,6 +17,7 @@ packages:
       - n
       - marksman
       - dprint
+      - tree
     casks:
       - 1password-cli
       - zed
