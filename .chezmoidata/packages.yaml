@@ -18,6 +18,9 @@ packages:
       - marksman
       - dprint
       - tree
+      - istioctl
+      - trivy
+      - helm-ls
     casks:
       - 1password-cli
       - zed
