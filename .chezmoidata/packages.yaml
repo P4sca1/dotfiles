@@ -21,6 +21,7 @@ packages:
       - istioctl
       - trivy
       - helm-ls
+      - rename
     casks:
       - 1password-cli
       - zed
