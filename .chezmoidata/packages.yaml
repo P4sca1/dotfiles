@@ -23,6 +23,10 @@ packages:
       - helm-ls
       - rename
       - eza
+      - python
+      - cilium-cli
+      - git
+      - yq
     casks:
       - 1password-cli
       - zed
