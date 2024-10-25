@@ -26,6 +26,7 @@ packages:
       - python
       - cilium-cli
       - git
+      - git-lfs
       - yq
     casks:
       - 1password-cli
