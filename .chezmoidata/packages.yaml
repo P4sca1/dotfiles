@@ -28,6 +28,7 @@ packages:
       - git
       - git-lfs
       - yq
+      - minio/stable/mc
     casks:
       - 1password-cli
       - zed
