@@ -1,6 +1,6 @@
 # Aliases
 alias bat="bat --theme=\$(defaults read -globalDomain AppleInterfaceStyle &> /dev/null && echo default || echo GitHub)"
-alias ll="eza -la"
+alias ll="eza -la --smart-group --group-directories-first --git --git-repos-no-status"
 
 # Fix GPG not asking for a password
 export GPG_TTY=$(tty)
