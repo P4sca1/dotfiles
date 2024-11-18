@@ -29,6 +29,8 @@ packages:
       - git-lfs
       - yq
       - minio/stable/mc
+      - hadolint
+      - velero
     casks:
       - 1password-cli
       - zed
