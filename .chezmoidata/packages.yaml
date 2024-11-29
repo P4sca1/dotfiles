@@ -31,6 +31,7 @@ packages:
       - minio/stable/mc
       - hadolint
       - velero
+      - pwgen
     casks:
       - 1password-cli
       - zed
