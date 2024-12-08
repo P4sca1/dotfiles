@@ -32,7 +32,7 @@ packages:
       - hadolint
       - velero
       - pwgen
-      - snappy
+      - snzip
     casks:
       - 1password-cli
       - zed
