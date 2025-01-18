@@ -33,6 +33,8 @@ packages:
       - velero
       - pwgen
       - snzip
+      - jsonnet
+      - jsonnet-bundler
     casks:
       - 1password-cli
       - zed
