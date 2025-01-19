@@ -35,6 +35,7 @@ packages:
       - snzip
       - jsonnet
       - jsonnet-bundler
+      - influxdb-cli
     casks:
       - 1password-cli
       - zed
