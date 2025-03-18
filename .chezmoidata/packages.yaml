@@ -37,7 +37,7 @@ packages:
       - jsonnet
       - jsonnet-bundler
       - influxdb-cli
-      - github.com/danielfoehrkn/kubeswitch
+      - danielfoehrkn/switch/switch
     casks:
       - 1password-cli
       - zed
