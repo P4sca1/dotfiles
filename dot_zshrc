@@ -26,5 +26,6 @@ fi
 
 # kubeswitch
 # https://github.com/danielfoehrKn/kubeswitch
+autoload -U +X compinit && compinit # https://stackoverflow.com/a/60383091
 source <(switcher init zsh)
 source <(switch completion zsh)
