@@ -24,3 +24,7 @@ if [ -f /Users/pascal/.config/op/plugins.sh ]; then
   source /Users/pascal/.config/op/plugins.sh
 fi
 
+# kubeswitch
+# https://github.com/danielfoehrKn/kubeswitch
+source <(switcher init zsh)
+source <(switch completion zsh)
