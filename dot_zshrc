@@ -7,13 +7,20 @@ export GPG_TTY=$(tty)
 # Enable colorized terminal output, e.g. for ls
 export CLICOLOR=1
 
+# https://github.com/tj/n#installation
+# It is important that this path is before the homebrew paths to that node is used from n instead of homebrew.
+export N_PREFIX="/Users/pascal"
+export PATH="/Users/pascal/bin:$PATH"
+
+# Add Helix dependencies to $PATH
+export PATH="$HOME/.config/helix/node_modules/.bin:$PATH"
+
+# Setup default editor
+export EDITOR="hx"
+
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
+export PATH="$PNPM_HOME:$PATH"
 
 # krew https://krew.sigs.k8s.io
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
