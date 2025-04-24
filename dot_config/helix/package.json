@@ -2,19 +2,27 @@
 	"name": "Helix dependencies (language servers, formatters, and more)",
 	"private": true,
 	"dependencies": {
-		"@biomejs/biome": "1.8.3",
-		"@microsoft/compose-language-service": "0.2.0",
-		"@prisma/language-server": "5.17.0",
-		"@tailwindcss/language-server": "0.0.21",
-		"@vue/typescript-plugin": "2.0.26",
-		"bash-language-server": "5.4.0",
-		"dockerfile-language-server-nodejs": "0.13.0",
-		"graphql-language-service-cli": "3.4.1",
-		"prettier": "3.3.3",
-		"typescript": "5.5.3",
-		"typescript-language-server": "4.3.3",
+		"@ansible/ansible-language-server": "1.2.3",
+		"@biomejs/biome": "1.9.4",
+		"@microsoft/compose-language-service": "0.4.0",
+		"@prisma/language-server": "6.6.0",
+		"@tailwindcss/language-server": "0.14.15",
+		"@vue/typescript-plugin": "2.2.10",
+		"bash-language-server": "5.6.0",
+		"dockerfile-language-server-nodejs": "0.14.0",
+		"graphql-language-service-cli": "3.5.0",
+		"prettier": "3.5.3",
+		"typescript": "5.8.3",
+		"typescript-language-server": "4.3.4",
 		"vscode-langservers-extracted": "4.10.0",
-		"yaml-language-server": "1.15.0"
+		"yaml-language-server": "1.17.0"
 	},
-	"packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
+	"packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f",
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"core-js",
+			"esbuild"
+		]
+	}
 }
