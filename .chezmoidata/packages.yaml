@@ -38,6 +38,8 @@ packages:
       - jsonnet-bundler
       - influxdb-cli
       - danielfoehrkn/switch/switch
+      - yamllint
+      - ansible-lint
     casks:
       - 1password-cli
       - zed
