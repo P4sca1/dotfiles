@@ -1,6 +1,6 @@
 # This file is used to define env variables that need to be accessed in non-interactive shells.
 
-# Setup golang.
+# Setup golang
 export PATH="/Users/pascal/go/bin:$PATH"
 export GOPATH=/Users/pascal/go
 
@@ -8,3 +8,7 @@ export GOPATH=/Users/pascal/go
 # https://developer.1password.com/docs/ssh/agent/compatibility
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
+# Setup cargo
+if [ -f "$HOME/.cargo/env" ]; then
+  source "$HOME/.cargo/env"
+fi
