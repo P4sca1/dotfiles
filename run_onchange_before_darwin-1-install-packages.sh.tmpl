@@ -13,3 +13,8 @@ cask {{ . | quote }}
 {{ end -}}
 EOF
 {{ end -}}
+
+# Install GoLang dependencies
+{{ range .packages.darwin.golang -}}
+go install {{ . | quote }}
+{{ end -}}

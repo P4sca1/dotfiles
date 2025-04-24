@@ -28,8 +28,7 @@ packages:
       - git
       - git-lfs
       - yq
-      # TODO: Add tap
-      # - minio/stable/mc
+      - minio/stable/mc
       - hadolint
       - velero
       - pwgen
@@ -41,9 +40,20 @@ packages:
       - yamllint
       - ansible-lint
       - shellcheck
-      - shfmt
     casks:
       - 1password-cli
       - zed
       - tower
       - lens
+    golang:
+      # GoLang integration for Helix
+      # https://helix-editor.vercel.app/reference/language-servers#install-tools
+      - golang.org/x/tools/gopls@latest                            # LSP
+      - github.com/go-delve/delve/cmd/dlv@latest                   # Debugger
+      - golang.org/x/tools/cmd/goimports@latest                    # Formatter
+      - github.com/nametake/golangci-lint-langserver@latest        # Linter
+      - github.com/golangci/golangci-lint/cmd/golangci-lint@latest # Linter cli
+      # Bash integration for Helix
+      # https://helix-editor.vercel.app/reference/language-servers#bash
+      - mvdan.cc/sh/v3/cmd/shfmt@latest
+    

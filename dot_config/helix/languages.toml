@@ -52,3 +52,8 @@ languages = ["vue"]
 name = "markdown"
 formatter = { command = "dprint", args = ["fmt", "--stdin", "md"]}
 auto-format = true
+
+[[language]]
+name = "go"
+auto-format = true
+formatter = { command = "goimports" }
