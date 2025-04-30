@@ -41,6 +41,7 @@ packages:
       - ansible-lint
       - shellcheck
       - regclient
+      - derailed/k9s/k9s
     casks:
       - 1password-cli
       - zed
