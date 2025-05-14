@@ -42,6 +42,8 @@ packages:
       - shellcheck
       - regclient
       - derailed/k9s/k9s
+      - python-lsp-server
+      - ruff
     casks:
       - 1password-cli
       - zed
