@@ -39,3 +39,6 @@ source <(switch completion zsh)
 
 # pipx
 export PATH="$PATH:/Users/pascal/.local/bin"
+
+# We need helm version 3 in path.
+export PATH="/opt/homebrew/opt/helm@3/bin:$PATH"

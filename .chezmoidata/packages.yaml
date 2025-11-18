@@ -12,7 +12,7 @@ packages:
       - gopls
       - hcloud
       - kubectl
-      - helm
+      - helm@3
       - taplo
       - n
       - marksman
