@@ -15,6 +15,11 @@ EOF
 {{ end -}}
 
 # Install GoLang dependencies
-{{ range .packages.darwin.golang -}}
+{{ range .packages.golang -}}
 go install {{ . | quote }}
+{{ end -}}
+
+# Install pipx dependencies
+{{ range .packages.pipx -}}
+pipx install {{ . | quote }}
 {{ end -}}

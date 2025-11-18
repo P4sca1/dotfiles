@@ -36,3 +36,6 @@ fi
 autoload -U +X compinit && compinit # https://stackoverflow.com/a/60383091
 source <(switcher init zsh)
 source <(switch completion zsh)
+
+# pipx
+export PATH="$PATH:/Users/pascal/.local/bin"

@@ -1,4 +1,7 @@
 theme = "catppuccin_mocha"
+# [theme]
+# light="papercolor-light"
+# dark="papercolor-dark"
 
 [editor]
 bufferline = "always"
