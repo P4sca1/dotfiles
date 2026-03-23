@@ -37,6 +37,7 @@
           pkgs.jsonnet-bundler
           pkgs.regclient
           pkgs.minio-client
+          pkgs.element-desktop
         ];
 
       programs.direnv.enable = true;
