@@ -37,7 +37,8 @@
           pkgs.jsonnet-bundler
           pkgs.regclient
           pkgs.minio-client
-          pkgs.element-desktop
+          # https://github.com/NixOS/nixpkgs/pull/501797
+          # pkgs.element-desktop
         ];
 
       programs.direnv.enable = true;
