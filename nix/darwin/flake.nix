@@ -11,7 +11,7 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, devenv }:
   let
-    configuration = { pkgs, ... }: {
+    configuration = { pkgs, lib, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
@@ -39,9 +39,17 @@
           pkgs.minio-client
           # https://github.com/NixOS/nixpkgs/pull/501797
           # pkgs.element-desktop
+          # Steam seems to not be supported on aarch64-darwin
+          # pkgs.steam
         ];
 
       programs.direnv.enable = true;
+
+      # This uses an old version of 1password, which is incompatible with the current 1password data format
+      # programs._1password.enable = true;
+      # programs._1password.package = pkgs._1password-cli;
+      # programs._1password-gui.enable = true;
+      # programs._1password-gui.package = pkgs._1password-gui;
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
@@ -68,6 +76,12 @@
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+      nixpkgs.config.allowUnfreePredicate = pkg:
+        builtins.elem (lib.getName pkg) [
+          "1password-cli"
+          "1password"
+          "steam"
+        ];
     };
   in
   {
