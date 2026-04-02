@@ -183,13 +183,27 @@
             programs.alacritty = {
               enable = true;
               package = pkgs.alacritty;
+              theme = "github_light"; # github_dark
               settings = {
+                window = {
+                  opacity = 1.0;
+                  decorations = "Full";
+                  decorations_theme_variant = "None";
+                  padding = {
+                    x = 12;
+                    y = 12;
+                  };
+                };
                 font = {
                   normal = { family = "JetBrainsMono Nerd Font Mono"; style = "Regular"; };
                   bold = { family = "JetBrainsMono Nerd Font Mono"; style = "Bold"; };
                   italic = { family = "JetBrainsMono Nerd Font Mono"; style = "Italic"; };
                   bold_italic = { family = "JetBrainsMono Nerd Font Mono"; style = "Bold Italic"; };
-                  size = 13;
+                  size = 18;
+                };
+                scrolling = {
+                  history = 10000;
+                  multiplier = 3;
                 };
               };
             };
@@ -392,6 +406,10 @@
               };
             };
 
+            programs.tmux = {
+              enable = true;
+            };
+
             programs.vscode = {
               enable = true;
               package = pkgs.vscodium;
@@ -486,6 +504,7 @@
             masApps = {
               "1Password for Safari" = 1569813296;
               "Yubico Authenticator" = 1497506650;
+              "Magnet" = 441258766;
             };
           };
         };
