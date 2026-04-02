@@ -239,6 +239,22 @@
         "type": "github"
       }
     },
+    "eurkey": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774211603,
+        "narHash": "sha256-z34EHdZ0mbpfi8vBmlPMQs6fbpkMMIhXVhFdZaq4Vbg=",
+        "owner": "felixfoertsch",
+        "repo": "EurKEY-macOS",
+        "rev": "ea4f88ae513a9ca4736c4e39726796fc976120b6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "felixfoertsch",
+        "repo": "EurKEY-macOS",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "locked": {
         "lastModified": 1733328505,
@@ -902,6 +918,7 @@
     "root": {
       "inputs": {
         "devenv": "devenv",
+        "eurkey": "eurkey",
         "home-manager": "home-manager",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",

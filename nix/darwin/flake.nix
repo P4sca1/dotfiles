@@ -27,6 +27,11 @@
 
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    eurkey = {
+      url = "github:felixfoertsch/EurKEY-macOS";
+      flake = false;
+    };
   };
 
   outputs =
@@ -37,6 +42,10 @@
       nixpkgs = import inputs.nixpkgs {
         system = hostPlatform;
       };
+      nixpkgs-unstable = import inputs.nixpkgs-unstable {
+        system = hostPlatform;
+        config.allowUnfreePredicate = allowUnfreePredicate;
+      };
       allowUnfreePredicate =
         pkg:
         builtins.elem (nixpkgs.lib.getName pkg) [
@@ -45,12 +54,27 @@
           "slack"
           "orbstack"
         ];
+      eurkeyBundle = nixpkgs.stdenv.mkDerivation {
+        pname = "EurKEY-Next";
 
-      nixpkgs-unstable = import inputs.nixpkgs-unstable {
-        system = hostPlatform;
-        config.allowUnfreePredicate = allowUnfreePredicate;
+        src = inputs.eurkey;
+
+        nativeBuildInputs = [ nixpkgs.python3 ];
+
+        buildPhase = ''
+          WORKDIR=$(mktemp -d)
+          cp -r "$src"/* "$WORKDIR/"
+          cd "$WORKDIR"
+          bash scripts/build-bundle.sh
+          mkdir -p "$out"
+          mv "$WORKDIR/build/EurKEY-Next.bundle" "$out/"
+        '';
+
+        installPhase = ''
+          ls -la "$out/"
+        '';
       };
-      
+
       configuration =
         { pkgs, ... }:
         {
@@ -94,6 +118,26 @@
             loginwindow.GuestEnabled = false;
             NSGlobalDomain.AppleICUForce24HourTime = true;
           };
+
+          # Install EurKey keyboard layout
+          system.activationScripts.eurkey.text = ''
+            set -e
+            TARGET="/Library/Keyboard Layouts/EurKEY-Next.bundle"
+            SOURCE="${eurkeyBundle}/EurKEY-Next.bundle"
+
+            mkdir -p "/Library/Keyboard Layouts"
+
+            # Only copy if the target does not exist or differs from the current Nix store
+            if [ ! -e "$TARGET" ] || ! cmp -s "$SOURCE" "$TARGET" >/dev/null 2>&1; then
+              echo "Installing or updating EurKEY bundle..."
+              rm -rf "$TARGET"
+              cp -R "$SOURCE" "$TARGET"
+              # Set proper ownership
+              chown -R root:wheel "$TARGET"
+            else
+              echo "EurKEY bundle already up-to-date, skipping."
+            fi
+          '';
 
           users.users.pascal = {
             description = "Pascal Sthamer";
@@ -169,16 +213,21 @@
 
             home.sessionVariables = {
             };
-            
+
             home.shellAliases = {
               k = "kubectl";
             };
 
             home.shell.enableShellIntegration = true;
-            
+
             # The state version is required and should stay at the version you
             # originally installed.
             home.stateVersion = "25.11";
+
+            programs.aerospace = {
+              enable = true;
+              package = pkgs.aerospace;
+            };
 
             programs.alacritty = {
               enable = true;
@@ -231,14 +280,23 @@
               ];
             };
 
-            programs.fzf = {
-              enable = true;
-              package = pkgs.fzf;
-            };
-
             programs.fd = {
               enable = true;
               package = pkgs.fd;
+            };
+
+            programs.firefox = {
+              enable = true;
+              package = pkgs.firefox;
+              languagePacks = [
+                "en-US"
+                "de"
+              ];
+            };
+
+            programs.fzf = {
+              enable = true;
+              package = pkgs.fzf;
             };
 
             programs.git = {
@@ -366,6 +424,63 @@
               package = pkgs.helix;
             };
 
+            programs.mcp = {
+              enable = true;
+              servers = { };
+            };
+
+            programs.opencode = {
+              enable = true;
+              enableMcpIntegration = true;
+              package = pkgs.opencode;
+              settings = {
+                # Add the procyde provider.
+                provider = {
+                  procyde = {
+                    npm = "@ai-sdk/openai-compatible";
+                    name = "Procyde Intelligent Assistant";
+                    options = {
+                      baseURL = "https://pia.procyde.online/v1";
+                      apiKey = "{env:PIA_API_KEY}";
+                    };
+                    models = {
+                      "PIA-1" = {
+                        name = "PIA-1";
+                      };
+                    };
+                  };
+                };
+
+                # Use PIA-1 by default
+                model = "procyde/PIA-1";
+
+                # Do not allow to share conversations externally, as they may contain sensitive information
+                share = "disabled";
+
+                # Configure default permissions for OpenCode
+                permission = {
+                  "*" = "ask";
+                  read = {
+                    "*" = "allow";
+                    "*.env*" = "deny";
+                  };
+                  edit = "allow";
+                  glob = "allow";
+                  grep = "allow";
+                  list = "allow";
+                  bash = {
+                    "*" = "ask";
+                    op = "deny";
+                  };
+                  todoread = "allow";
+                  todowrite = "allow";
+                  external_directory = "deny";
+                  doom_loop = "deny";
+                  nixos_nix = "allow";
+                };
+              };
+            };
+
             programs.ssh = {
               enable = true;
               enableDefaultConfig = false;
@@ -396,6 +511,7 @@
               enable = true;
               package = pkgs.starship;
               # Only available in newer versions of home-manager
+              # TODO: Enable once switched to nix and home-manager 26.05.
               # presets = [
               #   "nerd-font-symbols"
               # ];
@@ -495,17 +611,17 @@
               "httpie-desktop"
               "obsidian"
               "setapp"
-              "visual-studio-code"
               "balenaetcher"
               "bambu-studio"
               "tower"
               "monitorcontrol"
             ];
-            masApps = {
-              "1Password for Safari" = 1569813296;
-              "Yubico Authenticator" = 1497506650;
-              "Magnet" = 441258766;
-            };
+            # TODO: This is no longer working for some reason
+            # masApps = {
+            #   "1Password for Safari" = 1569813296;
+            #   "Yubico Authenticator" = 1497506650;
+            #   "Magnet" = 441258766;
+            # };
           };
         };
     in
