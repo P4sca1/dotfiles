@@ -43,54 +43,25 @@
           "1password"
           "1password-cli"
           "slack"
+          "orbstack"
         ];
 
       nixpkgs-unstable = import inputs.nixpkgs-unstable {
         system = hostPlatform;
         config.allowUnfreePredicate = allowUnfreePredicate;
       };
-
+      
       configuration =
-        { pkgs, lib, ... }:
+        { pkgs, ... }:
         {
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
-            pkgs.nixd
-            pkgs.nixfmt
-            pkgs.nix-init
-            devenv
-            pkgs.cilium-cli
-            pkgs.kubernetes-helm
-            pkgs.kubectl
-            pkgs.k9s
-            pkgs.dive
-            pkgs.hcloud
-            pkgs.helix
-            pkgs.bat
-            pkgs.fzf
-            pkgs.fd
-            pkgs.gh
-            pkgs.eza
-            pkgs.yq
-            pkgs.jsonnet
-            pkgs.jsonnet-bundler
-            pkgs.regclient
-            pkgs.minio-client
-            nixpkgs-unstable.element-desktop
-            pkgs.glow
-            nixpkgs-unstable.zarf
-            pkgs.just
-            pkgs.manifest-tool
-            pkgs.tilt
-            pkgs.jsonnet
-            pkgs.jsonnet-bundler
             pkgs.wireshark
+            pkgs.orbstack
             # 1password requires to always use the latest version. Otherwise, the password data format
             # might be too new for the app to open and you get an error during app startup.
             nixpkgs-unstable._1password-gui
-            nixpkgs-unstable._1password-cli
-            pkgs.slack
           ];
 
           environment.variables = {
@@ -101,13 +72,11 @@
             pkgs.nerd-fonts.jetbrains-mono
           ];
 
-          programs.zsh.enable = true;
-          programs.direnv.enable = true;
-
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
           nix.settings.trusted-users = [ "pascal" ];
           nix.linux-builder.enable = true;
+          nix.gc.automatic = true;
 
           # Set Git commit hash for darwin-version.
           system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -126,13 +95,246 @@
           };
 
           home-manager.useGlobalPkgs = true;
-          home-manager.users.pascal = { pkgs, ... }: {
-            home.packages = [ ];
-            home.sessionVariables = {
-              EDITOR = "hx";
+          home-manager.users.pascal =
+          let
+            # Common dependencies for editors, such as language servers or formatters.
+            editorDeps = nixpkgs.buildEnv {
+              name = "editor-deps";
+              paths =[
+                # Language Servers
+                nixpkgs.typescript-language-server
+                nixpkgs.vscode-langservers-extracted
+                nixpkgs.tailwindcss-language-server
+                nixpkgs.bash-language-server
+                nixpkgs.gopls
+                nixpkgs.golangci-lint-langserver
+
+                # Formatters / Linters
+                nixpkgs.biome
+                nixpkgs.prettier
+                nixpkgs.shfmt
+                nixpkgs.golangci-lint
+              ];
             };
-  
-            programs.zsh.enable = true;
+          in
+          { pkgs, ... }: {
+            home.packages = with pkgs; [
+              # Dev / Nix tools
+              devenv
+              nix-init
+              nixd
+              nixfmt
+
+              # Kubernetes / Cloud / Containers
+              cilium-cli
+              istioctl
+              trivy
+              dive
+              hcloud
+              kubernetes-helm
+              kubectl
+              manifest-tool
+              minio-client
+              regclient
+              nixpkgs-unstable.zarf
+
+              # CLI utilities
+              gh
+              glow
+              jsonnet
+              jsonnet-bundler
+              yq
+              # 1password requires to always use the latest version. Otherwise, the password data format
+              # might be too new for the app to open and you get an error during app startup.
+              nixpkgs-unstable._1password-cli
+              pnpm
+              nodejs
+              just
+
+              # GUI apps
+              slack
+            ];
+
+            home.sessionPath = [
+              # Ensure all editor tooling is in PATH, so that vscodium can access language servers and other tooling.
+              "${editorDeps}/bin"
+            ];
+            home.sessionVariables = {
+            };
+            
+            home.shellAliases = {
+              k = "kubectl";
+            };
+
+            home.shell.enableShellIntegration = true;
+            
+            # The state version is required and should stay at the version you
+            # originally installed.
+            home.stateVersion = "25.11";
+
+            programs.alacritty = {
+              enable = true;
+              package = pkgs.alacritty;
+              settings = {};
+            };
+
+            programs.bat = {
+              enable = true;
+              package = pkgs.bat;
+            };
+
+            programs.element-desktop = {
+              enable = true;
+              package = nixpkgs-unstable.element-desktop; # pkgs.element-desktop does not build as of now
+            };
+
+            programs.eza = {
+              enable = true;
+              package = pkgs.eza;
+              colors = "auto";
+              extraOptions = [
+                "--smart-group"
+                "--group-directories-first"
+                "--icons=auto"
+                "--git"
+                "--git-repos-no-status"
+              ];
+            };
+
+            programs.fzf = {
+              enable = true;
+              package = pkgs.fzf;
+            };
+
+            programs.fd = {
+              enable = true;
+              package = pkgs.fd;
+            };
+
+            programs.git = {
+              enable = true;
+              package = pkgs.git;
+              settings = {
+                user = {
+                  email = "pascal+github@sthamer.xyz";
+                  name = "Pascal Sthamer";
+                };
+                init.defaultBranch = "main";
+                gpg.ssh = {
+                  program = "${pkgs._1password-gui}/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+                };
+              };
+              signing = {
+                format = "ssh";
+                key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPyuj6++UcmsipUhtY256OMnj7O+N+26/vA7D57VrnRl";
+                signByDefault = true;
+              };
+              includes = [
+                {
+                  path  = "~/code/ips/.gitconfig";
+                  condition = "gitdir:~/code/ips";
+                }
+                {
+                  path  = "~/code/procyde/.gitconfig";
+                  condition = "gitdir:~/code/procyde";
+                }
+                {
+                  path  = "~/code/bwi/.gitconfig";
+                  condition = "gitdir:~/code/bwi";
+                }
+              ];
+            };
+
+            programs.helix = {
+              enable = true;
+              package = pkgs.helix;
+              defaultEditor = true;
+              ignores = [
+                "!.gitignore"
+              ];
+              settings = {
+                theme = "papercolor-light";
+                # theme.light = "papercolor-light";
+                # theme.dark = "papercolor-dark";
+
+                editor.bufferline = "always";
+              };
+              languages = {
+                javascript = {
+                  autoFormat = true;
+                  languageServers = [
+                    { name = "typescript-language-server"; command = "${editorDeps}/bin/typescript-language-server"; exceptFeatures = ["format"]; }
+                    { name = "biome"; command = "${editorDeps}/bin/biome"; }
+                  ];
+                };
+
+                typescript = {
+                  autoFormat = true;
+                  languageServers = [
+                    { name = "typescript-language-server"; command = "${editorDeps}/bin/typescript-language-server"; exceptFeatures = ["format"]; }
+                    { name = "biome"; command = "${editorDeps}/bin/biome"; }
+                  ];
+                };
+
+                html = {
+                  languageServers = [
+                    { name = "vscode-html-language-server"; command = "${editorDeps}/bin/vscode-html-language-server"; }
+                    { name = "tailwindcss-ls"; command = "${editorDeps}/bin/tailwindcss-ls"; }
+                  ];
+                };
+
+                css = {
+                  languageServers = [
+                    { name = "vscode-css-language-server"; command = "${editorDeps}/bin/vscode-css-language-server"; }
+                    { name = "tailwindcss-ls"; command = "${editorDeps}/bin/tailwindcss-ls"; }
+                  ];
+                };
+
+                json = {
+                  languageServers = [
+                    { name = "vscode-json-language-server"; command = "${editorDeps}/bin/vscode-json-language-server"; exceptFeatures = ["format"]; }
+                    { name = "biome"; command = "${editorDeps}/bin/biome"; }
+                  ];
+                };
+
+                vue = {
+                  autoFormat = true;
+                  formatter = { command = "${editorDeps}/bin/prettier"; args = ["--parser" "vue"]; };
+                  languageServers = [
+                    { name = "typescript-language-server"; command = "${editorDeps}/bin/typescript-language-server"; }
+                  ];
+                  plugins = [
+                    { name = "@vue/typescript-plugin"; location = "${editorDeps}/lib/node_modules/@vue/typescript-plugin"; languages = ["vue"]; }
+                  ];
+                };
+
+                markdown = {
+                  autoFormat = true;
+                  formatter = { command = "${editorDeps}/bin/dprint"; args = ["fmt" "--stdin" "md"]; };
+                };
+
+                go = {
+                  autoFormat = true;
+                  formatter = { command = "${editorDeps}/bin/goimports"; };
+                  languageServers = [
+                    { name = "gopls"; command = "${editorDeps}/bin/gopls"; }
+                    { name = "golangci-lint-langserver"; command = "${editorDeps}/bin/golangci-lint-langserver"; }
+                  ];
+                };
+
+                bash = {
+                  languageServers = [
+                    { name = "bash-language-server"; command = "${editorDeps}/bin/bash-language-server"; }
+                  ];
+                  formatter = { command = "${editorDeps}/bin/shfmt"; };
+                };
+              };
+            };
+
+            programs.k9s = {
+              enable = true;
+              package = pkgs.helix;
+            };
 
             programs.ssh = {
               enable = true;
@@ -160,49 +362,87 @@
                };
             };
 
-            programs.git = {
+            programs.starship = {
               enable = true;
-              package = pkgs.git;
+              package = pkgs.starship;
+              # Only available in newer versions of home-manager
+              # presets = [
+              #   "nerd-font-symbols"
+              # ];
               settings = {
-                user = {
-                  email = "pascal+github@sthamer.xyz";
-                  name = "Pascal Sthamer";
-                };
-                init.defaultBranch = "main";
-                gpg.ssh = {
-                  program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
+                kubernetes = {
+                  disabled = false;
                 };
               };
-              signing = {
-                format = "ssh";
-                key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPyuj6++UcmsipUhtY256OMnj7O+N+26/vA7D57VrnRl";
-                signByDefault = true;
-              };
-              includes = [
-                {
-                  path  = "~/code/ips/.gitconfig";
-                  condition = "gitdir:~/code/ips";
-                }
-                {
-                  path  = "~/code/procyde/.gitconfig";
-                  condition = "gitdir:~/code/procyde";
-                }
-                {
-                  path  = "~/code/bwi/.gitconfig";
-                  condition = "gitdir:~/code/bwi";
-                }
-              ];
             };
 
-            programs.alacritty = {
+            programs.vscode = {
               enable = true;
-              package = pkgs.alacritty;
-              settings = {};
-            };
+              package = pkgs.vscodium;
+              mutableExtensionsDir = false;
+              profiles.default = {
+                enableUpdateCheck = false;
+                extensions = [
+                  pkgs.vscode-extensions.redhat.vscode-yaml
+                  pkgs.vscode-extensions.esbenp.prettier-vscode
+                  pkgs.vscode-extensions.redhat.ansible
+                  pkgs.vscode-extensions.vue.volar
+                  pkgs.vscode-extensions.golang.go
+                  pkgs.vscode-extensions.prisma.prisma
+                  pkgs.vscode-extensions.hashicorp.hcl
+                  pkgs.vscode-extensions.biomejs.biome
+                  pkgs.vscode-extensions.mikestead.dotenv
+                  pkgs.vscode-extensions.github.github-vscode-theme
+                  pkgs.vscode-extensions.github.vscode-github-actions
+                ];
+                userSettings = {
+                  "[yaml]" = {
+                    "editor.defaultFormatter" = "redhat.vscode-yaml";
+                  };
+                  "[jsonc]" = {
+                    "editor.defaultFormatter" = "vscode.json-language-features";
+                  };
+                  "[json]" = {
+                    "editor.defaultFormatter" = "esbenp.prettier-vscode";
+                  };
+                  "[helm]" = {
+                    "editor.formatOnSave" = false;
+                  };
 
-            # The state version is required and should stay at the version you
-            # originally installed.
-            home.stateVersion = "25.11";
+                  # Ansible / Redhat
+                  "redhat.telemetry.enabled" = false;
+                  "ansible.lightspeed.enabled" = false;
+
+                  # Nix integration
+                  "nix.serverPath" = "${pkgs.nixd}/bin/nixd";
+                  "nix.formatterPath" = "${pkgs.nixfmt}/bin/nixfmt";
+                  "nix.serverSettings" = {
+                    "nixd" = {
+                      "formatting" = {
+                        "command" = [ "${pkgs.nixfmt}/bin/nixfmt" ];
+                      };
+                    };
+                  };
+
+                  # Appearance
+                  "window.autoDetectColorScheme" = true;
+                  "workbench.colorTheme" = "GitHub Light Default";
+                  "workbench.preferredLightColorTheme" = "GitHub Light Default";
+                  "workbench.preferredDarkColorTheme" = "GitHub Dark Default";
+                  "workbench.iconTheme" = "material-icon-theme";
+                  "workbench.sideBar.location" = "right";
+                  "editor.fontFamily" = "JetbrainsMono Nerd Font";
+                  "editor.fontSize" = 13;
+                  "editor.minimap.enabled" = false;
+
+                  # Miscellaneous
+                  "editor.formatOnSave" = true;
+                  "files.autoSave" = "afterDelay";
+                };
+              };
+            };
+  
+            programs.zsh.enable = true;
           };
 
           # The platform the configuration will be used on.
