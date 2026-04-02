@@ -211,6 +211,7 @@
             programs.aerospace = {
               enable = true;
               package = pkgs.aerospace;
+              launchd.enable = true;
             };
 
             programs.alacritty = {
