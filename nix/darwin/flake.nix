@@ -54,8 +54,8 @@
           "slack"
           "orbstack"
         ];
-      eurkeyBundle = nixpkgs.stdenv.mkDerivation {
-        pname = "EurKEY-Next";
+      eurKeyBundle = nixpkgs.stdenv.mkDerivation {
+        name = "EurKEY-Next";
 
         src = inputs.eurkey;
 
@@ -118,26 +118,6 @@
             loginwindow.GuestEnabled = false;
             NSGlobalDomain.AppleICUForce24HourTime = true;
           };
-
-          # Install EurKey keyboard layout
-          system.activationScripts.eurkey.text = ''
-            set -e
-            TARGET="/Library/Keyboard Layouts/EurKEY-Next.bundle"
-            SOURCE="${eurkeyBundle}/EurKEY-Next.bundle"
-
-            mkdir -p "/Library/Keyboard Layouts"
-
-            # Only copy if the target does not exist or differs from the current Nix store
-            if [ ! -e "$TARGET" ] || ! cmp -s "$SOURCE" "$TARGET" >/dev/null 2>&1; then
-              echo "Installing or updating EurKEY bundle..."
-              rm -rf "$TARGET"
-              cp -R "$SOURCE" "$TARGET"
-              # Set proper ownership
-              chown -R root:wheel "$TARGET"
-            else
-              echo "EurKEY bundle already up-to-date, skipping."
-            fi
-          '';
 
           users.users.pascal = {
             description = "Pascal Sthamer";
@@ -219,6 +199,10 @@
             };
 
             home.shell.enableShellIntegration = true;
+
+            home.file."Library/Keyboard Layouts/EurKEY-Next.bundle" = {
+              source = "${eurKeyBundle}/EurKEY-Next.bundle";
+            };
 
             # The state version is required and should stay at the version you
             # originally installed.
