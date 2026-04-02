@@ -217,7 +217,7 @@
             programs.alacritty = {
               enable = true;
               package = pkgs.alacritty;
-              theme = "github_light"; # github_dark
+              theme = "github_dark"; # github_light
               settings = {
                 window = {
                   opacity = 1.0;
@@ -326,10 +326,11 @@
                 "!.gitignore"
               ];
               settings = {
-                theme = "papercolor-light";
+                theme = "papercolor-dark";
+                # This is not supported by Helix in the current release, but is planned.
+                # See https://github.com/helix-editor/helix/pull/14356.
                 # theme.light = "papercolor-light";
                 # theme.dark = "papercolor-dark";
-
                 editor.bufferline = "always";
               };
               languages = {
