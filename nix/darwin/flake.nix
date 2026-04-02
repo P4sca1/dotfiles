@@ -88,6 +88,13 @@
           # required to use homebrew.enable = true.
           system.primaryUser = "pascal";
 
+          system.defaults = {
+            dock.autohide = true;
+            finder.FXPreferredViewStyle = "clmw";
+            loginwindow.GuestEnabled = false;
+            NSGlobalDomain.AppleICUForce24HourTime = true;
+          };
+
           users.users.pascal = {
             description = "Pascal Sthamer";
             shell = pkgs.zsh;
@@ -159,6 +166,7 @@
               # Ensure all editor tooling is in PATH, so that vscodium can access language servers and other tooling.
               "${editorDeps}/bin"
             ];
+
             home.sessionVariables = {
             };
             
