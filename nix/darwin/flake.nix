@@ -217,7 +217,7 @@
             programs.alacritty = {
               enable = true;
               package = pkgs.alacritty;
-              theme = "papercolor_dark"; # papercolor_light
+              theme = "monokai_charcoal"; # papercolor_light
               settings = {
                 window = {
                   opacity = 1.0;
