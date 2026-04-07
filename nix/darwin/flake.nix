@@ -490,6 +490,33 @@
                   "*.teleport.*.*" = {
                     identityAgent = "none";
                   };
+                  "bwi-hetzner-dev" = {
+                    user = "ubuntu";
+                    hostname = "168.119.73.177";
+                    port = 2221;
+                    localForwards = [
+                      {
+                        bind.port = 30080;
+                        host.address = "localhost";
+                        host.port = 30080;
+                      }
+                      {
+                        bind.port = 32080;
+                        host.address = "localhost";
+                        host.port = 32080;
+                      }
+                      {
+                        bind.port = 32443;
+                        host.address = "localhost";
+                        host.port = 32443;
+                      }
+                      {
+                        bind.port = 4711;
+                        host.address = "localhost";
+                        host.port = 4711;
+                      }
+                    ];
+                  };
                };
             };
 
@@ -510,6 +537,16 @@
 
             programs.tmux = {
               enable = true;
+              package = pkgs.tmux;
+              clock24 = true;
+              escapeTime = 0;
+              focusEvents = true;
+              historyLimit = 5000;
+              keyMode = "vi";
+              mouse = true;
+              newSession = true;
+              secureSocket = true;
+              terminal = "screen-256color";
             };
 
             programs.vscode = {
