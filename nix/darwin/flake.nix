@@ -542,11 +542,50 @@
               escapeTime = 0;
               focusEvents = true;
               historyLimit = 5000;
+              aggressiveResize = true;
+              shortcut = "a";
               keyMode = "vi";
               mouse = true;
               newSession = true;
               secureSocket = true;
               terminal = "screen-256color";
+              plugins = [
+                pkgs.tmuxPlugins.cpu
+                pkgs.tmuxPlugins.resurrect
+              ];
+              sensibleOnTop = true;
+              extraConfig = ''
+                # Increase tmux messages display duration from 750ms to 4s
+                set -g display-time 4000
+
+                # Refresh 'status-left' and 'status-right' more often, from every 15s to 2s
+                set -g status-interval 2
+
+                # Emacs key bindings in tmux command prompt (prefix + :) are better than
+                # vi keys, even for vim users
+                set -g status-keys emacs
+
+                # Easier and faster switching between next/prev window
+                bind C-p previous-window
+                bind C-n next-window
+
+                # Better pane splitting (and keep current path)
+                bind | split-window -h -c "#{pane_current_path}"
+                bind - split-window -v -c "#{pane_current_path}"
+                bind c new-window -c "#{pane_current_path}"
+
+                # Vim-style pane navigation
+                bind h select-pane -L
+                bind j select-pane -D
+                bind k select-pane -U
+                bind l select-pane -R
+
+                # Vim-style pane resizing
+                bind -r H resize-pane -L 5
+                bind -r J resize-pane -D 5
+                bind -r K resize-pane -U 5
+                bind -r L resize-pane -R 5
+              '';
             };
 
             programs.vscode = {
