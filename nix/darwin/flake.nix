@@ -217,7 +217,7 @@
             programs.alacritty = {
               enable = true;
               package = pkgs.alacritty;
-              theme = "github_dark"; # github_light
+              theme = "papercolor_dark"; # papercolor_light
               settings = {
                 window = {
                   opacity = 1.0;
