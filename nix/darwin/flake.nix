@@ -28,10 +28,10 @@
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    eurkey = {
-      url = "github:felixfoertsch/EurKEY-macOS";
-      flake = false;
-    };
+    # eurkey = {
+    #   url = "github:felixfoertsch/EurKEY-macOS";
+    #   flake = false;
+    # };
   };
 
   outputs =
@@ -54,26 +54,26 @@
           "slack"
           "orbstack"
         ];
-      eurKeyBundle = nixpkgs.stdenv.mkDerivation {
-        name = "EurKEY-Next";
+      # eurKeyBundle = nixpkgs.stdenv.mkDerivation {
+      #   name = "EurKEY-Next";
 
-        src = inputs.eurkey;
+      #   src = inputs.eurkey;
 
-        nativeBuildInputs = [ nixpkgs.python3 ];
+      #   nativeBuildInputs = [ nixpkgs.python3 ];
 
-        buildPhase = ''
-          WORKDIR=$(mktemp -d)
-          cp -r "$src"/* "$WORKDIR/"
-          cd "$WORKDIR"
-          bash scripts/build-bundle.sh
-          mkdir -p "$out"
-          mv "$WORKDIR/build/EurKEY-Next.bundle" "$out/"
-        '';
+      #   buildPhase = ''
+      #     WORKDIR=$(mktemp -d)
+      #     cp -r "$src"/* "$WORKDIR/"
+      #     cd "$WORKDIR"
+      #     bash scripts/build-bundle.sh
+      #     mkdir -p "$out"
+      #     mv "$WORKDIR/build/EurKEY-Next.bundle" "$out/"
+      #   '';
 
-        installPhase = ''
-          ls -la "$out/"
-        '';
-      };
+      #   installPhase = ''
+      #     ls -la "$out/"
+      #   '';
+      # };
 
       configuration =
         { pkgs, ... }:
@@ -200,9 +200,9 @@
 
             home.shell.enableShellIntegration = true;
 
-            home.file."Library/Keyboard Layouts/EurKEY-Next.bundle" = {
-              source = "${eurKeyBundle}/EurKEY-Next.bundle";
-            };
+            # home.file."Library/Keyboard Layouts/EurKEY-Next.bundle" = {
+            #   source = "${eurKeyBundle}/EurKEY-Next.bundle";
+            # };
 
             # The state version is required and should stay at the version you
             # originally installed.
@@ -211,7 +211,7 @@
             programs.aerospace = {
               enable = true;
               package = pkgs.aerospace;
-              launchd.enable = true;
+              launchd.enable = false;
             };
 
             programs.alacritty = {
@@ -503,7 +503,7 @@
               # ];
               settings = {
                 kubernetes = {
-                  disabled = false;
+                  disabled = true;
                 };
               };
             };
