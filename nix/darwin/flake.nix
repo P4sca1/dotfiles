@@ -407,7 +407,7 @@
 
             programs.k9s = {
               enable = true;
-              package = pkgs.helix;
+              package = pkgs.k9s;
             };
 
             programs.mcp = {
