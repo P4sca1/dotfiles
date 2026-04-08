@@ -200,6 +200,9 @@
 
             home.shell.enableShellIntegration = true;
 
+            # Hide last login message when opening a terminal
+            home.file.".hushlogin".text = "";
+
             # home.file."Library/Keyboard Layouts/EurKEY-Next.bundle" = {
             #   source = "${eurKeyBundle}/EurKEY-Next.bundle";
             # };
@@ -207,6 +210,8 @@
             # The state version is required and should stay at the version you
             # originally installed.
             home.stateVersion = "25.11";
+
+            xdg.enable = true;
 
             programs.aerospace = {
               enable = true;
@@ -543,6 +548,7 @@
               focusEvents = true;
               historyLimit = 5000;
               aggressiveResize = true;
+              baseIndex = 1;
               shortcut = "a";
               keyMode = "vi";
               mouse = true;
@@ -550,7 +556,6 @@
               secureSocket = true;
               terminal = "screen-256color";
               plugins = [
-                pkgs.tmuxPlugins.cpu
                 pkgs.tmuxPlugins.resurrect
               ];
               sensibleOnTop = true;
@@ -653,7 +658,7 @@
                 };
               };
             };
-  
+
             programs.zsh.enable = true;
           };
 
