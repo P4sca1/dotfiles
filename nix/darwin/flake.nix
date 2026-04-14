@@ -116,7 +116,12 @@
             dock.autohide = true;
             finder.FXPreferredViewStyle = "clmw";
             loginwindow.GuestEnabled = false;
-            NSGlobalDomain.AppleICUForce24HourTime = true;
+            NSGlobalDomain = {
+              AppleICUForce24HourTime = true;
+              ApplePressAndHoldEnabled = false;
+              InitialKeyRepeat = 15;
+              KeyRepeat = 2;
+            };
           };
 
           users.users.pascal = {
@@ -139,12 +144,14 @@
                 nixpkgs.bash-language-server
                 nixpkgs.gopls
                 nixpkgs.golangci-lint-langserver
+                nixpkgs.nixd
 
                 # Formatters / Linters
                 nixpkgs.biome
                 nixpkgs.prettier
                 nixpkgs.shfmt
                 nixpkgs.golangci-lint
+                nixpkgs.nixfmt
               ];
             };
           in
@@ -252,10 +259,12 @@
               package = pkgs.bat;
             };
 
-            programs.element-desktop = {
-              enable = true;
-              package = nixpkgs-unstable.element-desktop; # pkgs.element-desktop does not build as of now
-            };
+            # element from nixpkgs is not built using element call feature flags.
+            # We use the homebrew version instead for now
+            # programs.element-desktop = {
+            #   enable = true;
+            #   package = nixpkgs-unstable.element-desktop; # pkgs.element-desktop does not build as of now
+            # };
 
             programs.eza = {
               enable = true;
@@ -310,15 +319,15 @@
               includes = [
                 {
                   path  = "~/code/ips/.gitconfig";
-                  condition = "gitdir:~/code/ips";
+                  condition = "gitdir:~/code/ips/";
                 }
                 {
                   path  = "~/code/procyde/.gitconfig";
-                  condition = "gitdir:~/code/procyde";
+                  condition = "gitdir:~/code/procyde/";
                 }
                 {
                   path  = "~/code/bwi/.gitconfig";
-                  condition = "gitdir:~/code/bwi";
+                  condition = "gitdir:~/code/bwi/";
                 }
               ];
             };
@@ -406,6 +415,13 @@
                     { name = "bash-language-server"; command = "${editorDeps}/bin/bash-language-server"; }
                   ];
                   formatter = { command = "${editorDeps}/bin/shfmt"; };
+                };
+
+                nix = {
+                  languageServers = [
+                    { name = "nixd"; command = "${editorDeps}/bin/nixd"; }
+                  ];
+                  formatter = { command = "${editorDeps}/bin/nixfmt"; };
                 };
               };
             };
@@ -546,13 +562,13 @@
               clock24 = true;
               escapeTime = 0;
               focusEvents = true;
-              historyLimit = 5000;
+              historyLimit = 25000;
               aggressiveResize = true;
               baseIndex = 1;
               shortcut = "a";
               keyMode = "vi";
               mouse = true;
-              newSession = true;
+              newSession = false;
               secureSocket = true;
               terminal = "screen-256color";
               plugins = [
@@ -590,6 +606,9 @@
                 bind -r J resize-pane -D 5
                 bind -r K resize-pane -U 5
                 bind -r L resize-pane -R 5
+
+                # Bind config using r
+                bind r source-file ~/.config/tmux/tmux.conf \; display "Config reloaded!"
               '';
             };
 
@@ -611,6 +630,7 @@
                   pkgs.vscode-extensions.mikestead.dotenv
                   pkgs.vscode-extensions.github.github-vscode-theme
                   pkgs.vscode-extensions.github.vscode-github-actions
+                  pkgs.vscode-extensions.jnoortheen.nix-ide
                 ];
                 userSettings = {
                   "[yaml]" = {
@@ -631,12 +651,13 @@
                   "ansible.lightspeed.enabled" = false;
 
                   # Nix integration
-                  "nix.serverPath" = "${pkgs.nixd}/bin/nixd";
-                  "nix.formatterPath" = "${pkgs.nixfmt}/bin/nixfmt";
+                  "nix.enableLanguageServer" = true;
+                  "nix.serverPath" = "nixd";
+                  "nix.formatterPath" = "nixfmt";
                   "nix.serverSettings" = {
                     "nixd" = {
                       "formatting" = {
-                        "command" = [ "${pkgs.nixfmt}/bin/nixfmt" ];
+                        "command" = [ "nixfmt" ];
                       };
                     };
                   };
@@ -682,13 +703,13 @@
               "bambu-studio"
               "tower"
               "monitorcontrol"
+              "element"
             ];
-            # TODO: This is no longer working for some reason
-            # masApps = {
-            #   "1Password for Safari" = 1569813296;
-            #   "Yubico Authenticator" = 1497506650;
-            #   "Magnet" = 441258766;
-            # };
+            masApps = {
+              "1Password for Safari" = 1569813296;
+              "Yubico Authenticator" = 1497506650;
+              "Magnet" = 441258766;
+            };
           };
         };
     in
