@@ -8,9 +8,6 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    devenv.url = "github:cachix/devenv";
-    devenv.inputs.nixpkgs.follows = "nixpkgs";
-
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -38,7 +35,6 @@
     inputs@{ self, nix-darwin, ... }:
     let
       hostPlatform = "aarch64-darwin";
-      devenv = inputs.devenv.packages.${hostPlatform}.devenv;
       nixpkgs = import inputs.nixpkgs {
         system = hostPlatform;
       };
@@ -145,6 +141,8 @@
                 nixpkgs.gopls
                 nixpkgs.golangci-lint-langserver
                 nixpkgs.nixd
+                nixpkgs.yaml-language-server
+                nixpkgs-unstable.ansible-language-server # not in 25.11 yet
 
                 # Formatters / Linters
                 nixpkgs.biome
@@ -152,13 +150,16 @@
                 nixpkgs.shfmt
                 nixpkgs.golangci-lint
                 nixpkgs.nixfmt
+                nixpkgs.yamlfmt
+                nixpkgs.yamllint
+                nixpkgs.ansible-lint
               ];
             };
           in
           { pkgs, ... }: {
             home.packages = with pkgs; [
               # Dev / Nix tools
-              devenv
+              nixpkgs-unstable.devenv # we need at least devenv version 2, which is not part of nixos 25.11
               nix-init
               nixd
               nixfmt
@@ -423,6 +424,14 @@
                   ];
                   formatter = { command = "${editorDeps}/bin/nixfmt"; };
                 };
+
+                yaml = {
+                  languageServers = [
+                    { name = "yaml-language-server"; command = "${editorDeps}/bin/yaml-language-server"; }
+                    { name = "ansible-language-server"; command = "${editorDeps}/bin/ansible-language-server"; }
+                  ];
+                  formatter = { command = "${editorDeps}/bin/yamlfmt"; args = ["-"]; };
+                };
               };
             };
 
@@ -621,6 +630,7 @@
                 extensions = [
                   pkgs.vscode-extensions.redhat.vscode-yaml
                   pkgs.vscode-extensions.esbenp.prettier-vscode
+                  pkgs.vscode-extensions.ms-python.python
                   pkgs.vscode-extensions.redhat.ansible
                   pkgs.vscode-extensions.vue.volar
                   pkgs.vscode-extensions.golang.go
