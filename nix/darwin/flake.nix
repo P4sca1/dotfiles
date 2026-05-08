@@ -45,8 +45,6 @@
       allowUnfreePredicate =
         pkg:
         builtins.elem (nixpkgs.lib.getName pkg) [
-          "1password"
-          "1password-cli"
           "slack"
           "orbstack"
         ];
@@ -79,9 +77,6 @@
           environment.systemPackages = [
             pkgs.wireshark
             pkgs.orbstack
-            # 1password requires to always use the latest version. Otherwise, the password data format
-            # might be too new for the app to open and you get an error during app startup.
-            nixpkgs-unstable._1password-gui
           ];
 
           environment.variables = {
@@ -172,6 +167,7 @@
               hcloud
               kubernetes-helm
               kubectl
+              kubespy
               manifest-tool
               minio-client
               regclient
@@ -183,9 +179,6 @@
               jsonnet
               jsonnet-bundler
               yq
-              # 1password requires to always use the latest version. Otherwise, the password data format
-              # might be too new for the app to open and you get an error during app startup.
-              nixpkgs-unstable._1password-cli
               pnpm
               nodejs
               just
@@ -230,7 +223,8 @@
             programs.alacritty = {
               enable = true;
               package = pkgs.alacritty;
-              theme = "monokai_charcoal"; # papercolor_light
+              theme = "monokai_charcoal";
+              # theme = "papercolor_light";
               settings = {
                 window = {
                   opacity = 1.0;
@@ -309,7 +303,7 @@
                 };
                 init.defaultBranch = "main";
                 gpg.ssh = {
-                  program = "${pkgs._1password-gui}/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+                  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
                 };
               };
               signing = {
@@ -341,7 +335,8 @@
                 "!.gitignore"
               ];
               settings = {
-                theme = "papercolor-dark";
+                # theme = "papercolor-dark";
+                theme = "papercolor-light";
                 # This is not supported by Helix in the current release, but is planned.
                 # See https://github.com/helix-editor/helix/pull/14356.
                 # theme.light = "papercolor-light";
@@ -715,11 +710,11 @@
               "monitorcontrol"
               "element"
             ];
-            masApps = {
-              "1Password for Safari" = 1569813296;
-              "Yubico Authenticator" = 1497506650;
-              "Magnet" = 441258766;
-            };
+            # masApps = {
+            #   "1Password for Safari" = 1569813296;
+            #   "Yubico Authenticator" = 1497506650;
+            #   "Magnet" = 441258766;
+            # };
           };
         };
     in
