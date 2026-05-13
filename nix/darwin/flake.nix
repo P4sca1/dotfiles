@@ -128,6 +128,9 @@
             editorDeps = nixpkgs.buildEnv {
               name = "editor-deps";
               paths =[
+                # Languages
+                nixpkgs.go # required by the go vscode extension
+
                 # Language Servers
                 nixpkgs.typescript-language-server
                 nixpkgs.vscode-langservers-extracted
