@@ -61,7 +61,6 @@
                 taps = {
                   "homebrew/homebrew-core" = inputs.homebrew-core;
                   "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "robusta-dev/homebrew-holmesgpt" = inputs.homebrew-holmesgpt;
                 };
 
                 # Enable fully-declarative tap management

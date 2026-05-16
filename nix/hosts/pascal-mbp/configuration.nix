@@ -100,7 +100,6 @@ in
     enable = true;
     onActivation.cleanup = "zap";
     brews = [
-      "holmesgpt"
     ];
     casks = [
       "deskpad"
