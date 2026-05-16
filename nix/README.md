@@ -10,7 +10,7 @@ You need to have the nix package manager installed. See https://nixos.org/downlo
 ```sh
 git clone git@github.com:P4sca1/dotfiles.git
 
-nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake /path/to/dotfiles/nix/darwin#MacBook-PROCYDE
+sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake /path/to/dotfiles/nix#pascal-mbp
 ```
 
 ## Useful commands
@@ -20,5 +20,5 @@ nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch 
 nix flake update
 
 # Rebuild and switch to new configuration
-sudo darwin-rebuild switch --flake /path/to/dotfiles/nix/darwin#MacBook-PROCYDE
+sudo darwin-rebuild switch --flake /path/to/dotfiles/nix#pascal-mbp
 ```
