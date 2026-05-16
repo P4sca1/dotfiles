@@ -100,9 +100,9 @@ in
     enable = true;
     onActivation.cleanup = "zap";
     brews = [
-      "1password-cli"
     ];
     casks = [
+      "1password-cli"
       "deskpad"
       "httpie-desktop"
       "obsidian"
