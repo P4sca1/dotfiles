@@ -394,6 +394,9 @@ in
         "*.teleport.*.*" = {
           identityAgent = "none";
         };
+        "*.ips-hosting.com" = {
+          user = "ips-hosting";
+        };
         "bwi-hetzner-dev" = {
           user = "ubuntu";
           hostname = "168.119.73.177";
