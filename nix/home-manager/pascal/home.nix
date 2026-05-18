@@ -1,5 +1,8 @@
-{ pkgs, inputs, nixpkgs-unstable, ... }:
+{ lib, pkgs, inputs, nixpkgs-unstable, ... }@args:
 let
+  isDarwin = pkgs.stdenv.isDarwin;
+  isLinux = pkgs.stdenv.isLinux;
+
   # Common dependencies for editors, such as language servers or formatters.
   editorDeps = pkgs.buildEnv {
     name = "editor-deps";
@@ -61,10 +64,11 @@ in
     pnpm
     nodejs
     just
-
+  ] ++ (if !args.isWSL then [
     # GUI apps
     slack
-  ];
+  ] else [
+  ]);
 
   home.sessionPath = [
     # Ensure all editor tooling is in PATH, so that vscodium can access language servers and other tooling.
@@ -72,6 +76,8 @@ in
   ];
 
   home.sessionVariables = {
+    EDITOR = "hx";
+    BROWSER = lib.mkIf args.isWSL "wslview";
   };
 
   home.shellAliases = {
@@ -93,7 +99,7 @@ in
 
   xdg.enable = true;
 
-  programs.aerospace = {
+  programs.aerospace = lib.mkIf isDarwin {
     enable = true;
     package = pkgs.aerospace;
     launchd.enable = false;
@@ -181,8 +187,12 @@ in
         name = "Pascal Sthamer";
       };
       init.defaultBranch = "main";
+      core = lib.mkIf args.isWSL {
+        # Use ssh from windows, so that 1Password SSH integration can be used.
+        sshCommand = "ssh.exe";
+      };
       gpg.ssh = {
-        program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        program = if args.isWSL then "/mnt/c/Users/mower/AppData/Local/Microsoft/WindowsApps/op-ssh-sign-wsl.exe" else "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
       };
     };
     signing = {

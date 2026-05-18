@@ -8,6 +8,8 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -34,14 +36,15 @@
   outputs =
     {
       self,
+      nixpkgs,
       nix-darwin,
+      nixos-wsl,
       home-manager,
       ...
     }@inputs:
     {
       darwinConfigurations = {
         pascal-mbp = nix-darwin.lib.darwinSystem {
-          inherit inputs;
           system = "x86_64-darwin";
           modules = [
             ./hosts/pascal-mbp/configuration.nix
@@ -81,7 +84,6 @@
         };
       
         pascal-mbp-procyde = nix-darwin.lib.darwinSystem {
-          inherit inputs;
           system = "aarch64-darwin";
           modules = [
             ./hosts/pascal-mbp-procyde/configuration.nix
@@ -118,6 +120,22 @@
               }
             )
             home-manager.darwinModules.home-manager
+          ];
+        };
+      };
+
+      nixosConfigurations = {
+        pascal-pc = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          specialArgs = {
+            inherit inputs;
+          };
+
+          modules = [
+            ./hosts/pascal-pc/configuration.nix
+            nixos-wsl.nixosModules.default
+            home-manager.nixosModules.home-manager
           ];
         };
       };
