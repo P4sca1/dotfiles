@@ -5,10 +5,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
+    nix-flatpak.url = "github:gmodena/nix-flatpak/v0.7.0";
+
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     homebrew-core = {
@@ -27,6 +27,11 @@
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # eurkey = {
     #   url = "github:felixfoertsch/EurKEY-macOS";
     #   flake = false;
@@ -37,9 +42,10 @@
     {
       self,
       nixpkgs,
+      nix-flatpak,
       nix-darwin,
-      nixos-wsl,
       home-manager,
+      nur,
       ...
     }@inputs:
     {
@@ -82,7 +88,7 @@
             home-manager.darwinModules.home-manager
           ];
         };
-      
+
         pascal-mbp-procyde = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           modules = [
@@ -126,16 +132,16 @@
 
       nixosConfigurations = {
         pascal-pc = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-
           specialArgs = {
             inherit inputs;
+            hostPlatform = "x86_64-linux";
           };
 
           modules = [
             ./hosts/pascal-pc/configuration.nix
-            nixos-wsl.nixosModules.default
             home-manager.nixosModules.home-manager
+            nix-flatpak.nixosModules.nix-flatpak
+            nur.modules.nixos.default
           ];
         };
       };

@@ -1,13 +1,19 @@
-{ lib, pkgs, inputs, nixpkgs-unstable, ... }@args:
+{
+  lib,
+  pkgs,
+  config,
+  inputs,
+  nixpkgs-unstable,
+  ...
+}@args:
 let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
-  isWSL = args.isWSL;
 
   # Common dependencies for editors, such as language servers or formatters.
   editorDeps = pkgs.buildEnv {
     name = "editor-deps";
-    paths =[
+    paths = [
       # Languages
       pkgs.go # required by the go vscode extension
 
@@ -35,41 +41,47 @@ let
   };
 in
 {
-  home.packages = with pkgs; [
-    # Dev / Nix tools
-    nixpkgs-unstable.devenv # we need at least devenv version 2, which is not part of nixos 25.11
-    nix-init
-    nixd
-    nixfmt
+  home.packages =
+    let
+      sharedPackages = with pkgs; [
+        # Dev / Nix tools
+        nixpkgs-unstable.devenv # we need at least devenv version 2, which is not part of nixos 25.11
+        nix-init
+        nixd
+        nixfmt
 
-    # Kubernetes / Cloud / Containers
-    cilium-cli
-    istioctl
-    trivy
-    dive
-    hcloud
-    kubernetes-helm
-    kubectl
-    kubespy
-    manifest-tool
-    minio-client
-    regclient
-    nixpkgs-unstable.zarf
+        # Kubernetes / Cloud / Containers
+        cilium-cli
+        istioctl
+        trivy
+        dive
+        hcloud
+        kubernetes-helm
+        kubectl
+        kubespy
+        manifest-tool
+        minio-client
+        regclient
+        nixpkgs-unstable.zarf
 
-    # CLI utilities
-    gh
-    glow
-    jsonnet
-    jsonnet-bundler
-    yq
-    pnpm
-    nodejs
-    just
-  ] ++ (if !isWSL then [
-    # GUI apps
-    slack
-  ] else [
-  ]);
+        # CLI utilities
+        gh
+        glow
+        jsonnet
+        jsonnet-bundler
+        yq
+        pnpm
+        nodejs
+        just
+      ];
+      linuxPackages = with pkgs; [
+      ];
+      darwinPackages = with pkgs; [
+        # GUI apps
+        slack
+      ];
+    in
+    sharedPackages ++ lib.optionals isLinux linuxPackages ++ lib.optionals isDarwin darwinPackages;
 
   home.sessionPath = [
     # Ensure all editor tooling is in PATH, so that vscodium can access language servers and other tooling.
@@ -78,7 +90,6 @@ in
 
   home.sessionVariables = {
     EDITOR = "hx";
-    BROWSER = lib.mkIf isWSL "wslview";
   };
 
   home.shellAliases = {
@@ -122,10 +133,22 @@ in
         };
       };
       font = {
-        normal = { family = "JetBrainsMono Nerd Font Mono"; style = "Regular"; };
-        bold = { family = "JetBrainsMono Nerd Font Mono"; style = "Bold"; };
-        italic = { family = "JetBrainsMono Nerd Font Mono"; style = "Italic"; };
-        bold_italic = { family = "JetBrainsMono Nerd Font Mono"; style = "Bold Italic"; };
+        normal = {
+          family = "JetBrainsMono Nerd Font Mono";
+          style = "Regular";
+        };
+        bold = {
+          family = "JetBrainsMono Nerd Font Mono";
+          style = "Bold";
+        };
+        italic = {
+          family = "JetBrainsMono Nerd Font Mono";
+          style = "Italic";
+        };
+        bold_italic = {
+          family = "JetBrainsMono Nerd Font Mono";
+          style = "Bold Italic";
+        };
         size = 18;
       };
       scrolling = {
@@ -169,9 +192,109 @@ in
     enable = true;
     package = pkgs.firefox;
     languagePacks = [
-      "en-US"
       "de"
+      "en-US"
     ];
+    profiles = {
+      "pascal" = {
+        isDefault = true;
+        extensions = {
+          packages = with pkgs.nur.repos.rycee.firefox-addons; [
+            onepassword-password-manager
+            ublock-origin
+            bypass-paywalls-clean
+            auto-reject-cookies
+            vue-js-devtools
+          ];
+        };
+        bookmarks = {
+          force = true;
+          settings = [ ];
+        };
+        search = {
+          force = true;
+          default = "ddg";
+        };
+        settings = {
+          "extensions.autoDisableScopes" = 0; # Automatically activate extensions.
+          "sidebar.verticalTabs" = true;
+          "intl.locale.requested" = "de,en-US";
+
+          # AI
+          "browser.ai.control.default" = "blocked";
+
+          # Privacy / Telemetry
+          "toolkit.telemetry.enabled" = false;
+          "toolkit.telemetry.unified" = false;
+          "toolkit.telemetry.archive.enabled" = false;
+          "datareporting.healthreport.uploadEnabled" = false;
+          "datareporting.policy.dataSubmissionEnabled" = false;
+          "browser.ping-centre.telemetry" = false;
+          "app.shield.optoutstudies.enabled" = false;
+          "browser.newtabpage.activity-stream.feeds.telemetry" = false;
+          "browser.newtabpage.activity-stream.telemetry" = false;
+          "datareporting.healthreport.service.enabled" = false;
+          "datareporting.sessions.current.clean" = true;
+          "devtools.onboarding.telemetry.logged" = false;
+          "toolkit.telemetry.bhrPing.enabled" = false;
+          "toolkit.telemetry.firstShutdownPing.enabled" = false;
+          "toolkit.telemetry.hybridContent.enabled" = false;
+          "toolkit.telemetry.newProfilePing.enabled" = false;
+          "toolkit.telemetry.prompted" = 2;
+          "toolkit.telemetry.rejected" = true;
+          "toolkit.telemetry.reportingpolicy.firstRun" = false;
+          "toolkit.telemetry.server" = "";
+          "toolkit.telemetry.shutdownPingSender.enabled" = false;
+          "toolkit.telemetry.unifiedIsOptIn" = false;
+          "toolkit.telemetry.updatePing.enabled" = false;
+
+          # Pocket / Sponsored Content
+          "extensions.pocket.enabled" = false;
+          "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+          "browser.newtabpage.activity-stream.showSponsored" = false;
+          "browser.newtabpage.activity-stream.system.showSponsored" = false;
+
+          # Tracking Protection
+          "privacy.trackingprotection.enabled" = true;
+          "privacy.trackingprotection.socialtracking.enabled" = true;
+          "privacy.partition.network_state" = true;
+          "privacy.partition.serviceWorkers" = true;
+
+          # HTTPS / DNS
+          "dom.security.https_only_mode" = true;
+
+          # Disable Firefox DoH (use system resolver)
+          "network.trr.mode" = 0;
+
+          # Fingerprinting Resistance
+          "privacy.resistFingerprinting" = true;
+
+          # Referers
+          "network.http.referer.XOriginPolicy" = 2;
+          "network.http.referer.XOriginTrimmingPolicy" = 2;
+
+          # Cookies
+          "network.cookie.cookieBehavior" = 5;
+
+          # Disable WebRTC IP leaks
+          "media.peerconnection.enabled" = false;
+
+          # Search Suggestions
+          "browser.search.suggest.enabled" = false;
+          "browser.urlbar.suggest.searches" = false;
+
+          # UI annoyances
+          "browser.startup.homepage" = "about:home";
+          "browser.aboutConfig.showWarning" = false;
+          "browser.profiles.enabled" = false;
+        };
+      };
+    };
+  };
+
+  programs.firefoxpwa = {
+    enable = isLinux;
+    package = pkgs.firefoxpwa;
   };
 
   programs.fzf = {
@@ -188,12 +311,12 @@ in
         name = "Pascal Sthamer";
       };
       init.defaultBranch = "main";
-      core = lib.mkIf isWSL {
-        # Use ssh from windows, so that 1Password SSH integration can be used.
-        sshCommand = "ssh.exe";
-      };
       gpg.ssh = {
-        program = if isWSL then "/mnt/c/Users/mower/AppData/Local/Microsoft/WindowsApps/op-ssh-sign-wsl.exe" else "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        program =
+          if isDarwin then
+            "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+          else
+            "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
       };
     };
     signing = {
@@ -203,15 +326,15 @@ in
     };
     includes = [
       {
-        path  = "~/code/ips/.gitconfig";
+        path = "~/code/ips/.gitconfig";
         condition = "gitdir:~/code/ips/";
       }
       {
-        path  = "~/code/procyde/.gitconfig";
+        path = "~/code/procyde/.gitconfig";
         condition = "gitdir:~/code/procyde/";
       }
       {
-        path  = "~/code/bwi/.gitconfig";
+        path = "~/code/bwi/.gitconfig";
         condition = "gitdir:~/code/bwi/";
       }
     ];
@@ -237,85 +360,165 @@ in
       javascript = {
         autoFormat = true;
         languageServers = [
-          { name = "typescript-language-server"; command = "${editorDeps}/bin/typescript-language-server"; exceptFeatures = ["format"]; }
-          { name = "biome"; command = "${editorDeps}/bin/biome"; }
+          {
+            name = "typescript-language-server";
+            command = "${editorDeps}/bin/typescript-language-server";
+            exceptFeatures = [ "format" ];
+          }
+          {
+            name = "biome";
+            command = "${editorDeps}/bin/biome";
+          }
         ];
       };
 
       typescript = {
         autoFormat = true;
         languageServers = [
-          { name = "typescript-language-server"; command = "${editorDeps}/bin/typescript-language-server"; exceptFeatures = ["format"]; }
-          { name = "biome"; command = "${editorDeps}/bin/biome"; }
+          {
+            name = "typescript-language-server";
+            command = "${editorDeps}/bin/typescript-language-server";
+            exceptFeatures = [ "format" ];
+          }
+          {
+            name = "biome";
+            command = "${editorDeps}/bin/biome";
+          }
         ];
       };
 
       html = {
         languageServers = [
-          { name = "vscode-html-language-server"; command = "${editorDeps}/bin/vscode-html-language-server"; }
-          { name = "tailwindcss-ls"; command = "${editorDeps}/bin/tailwindcss-ls"; }
+          {
+            name = "vscode-html-language-server";
+            command = "${editorDeps}/bin/vscode-html-language-server";
+          }
+          {
+            name = "tailwindcss-ls";
+            command = "${editorDeps}/bin/tailwindcss-ls";
+          }
         ];
       };
 
       css = {
         languageServers = [
-          { name = "vscode-css-language-server"; command = "${editorDeps}/bin/vscode-css-language-server"; }
-          { name = "tailwindcss-ls"; command = "${editorDeps}/bin/tailwindcss-ls"; }
+          {
+            name = "vscode-css-language-server";
+            command = "${editorDeps}/bin/vscode-css-language-server";
+          }
+          {
+            name = "tailwindcss-ls";
+            command = "${editorDeps}/bin/tailwindcss-ls";
+          }
         ];
       };
 
       json = {
         languageServers = [
-          { name = "vscode-json-language-server"; command = "${editorDeps}/bin/vscode-json-language-server"; exceptFeatures = ["format"]; }
-          { name = "biome"; command = "${editorDeps}/bin/biome"; }
+          {
+            name = "vscode-json-language-server";
+            command = "${editorDeps}/bin/vscode-json-language-server";
+            exceptFeatures = [ "format" ];
+          }
+          {
+            name = "biome";
+            command = "${editorDeps}/bin/biome";
+          }
         ];
       };
 
       vue = {
         autoFormat = true;
-        formatter = { command = "${editorDeps}/bin/prettier"; args = ["--parser" "vue"]; };
+        formatter = {
+          command = "${editorDeps}/bin/prettier";
+          args = [
+            "--parser"
+            "vue"
+          ];
+        };
         languageServers = [
-          { name = "typescript-language-server"; command = "${editorDeps}/bin/typescript-language-server"; }
+          {
+            name = "typescript-language-server";
+            command = "${editorDeps}/bin/typescript-language-server";
+          }
         ];
         plugins = [
-          { name = "@vue/typescript-plugin"; location = "${editorDeps}/lib/node_modules/@vue/typescript-plugin"; languages = ["vue"]; }
+          {
+            name = "@vue/typescript-plugin";
+            location = "${editorDeps}/lib/node_modules/@vue/typescript-plugin";
+            languages = [ "vue" ];
+          }
         ];
       };
 
       markdown = {
         autoFormat = true;
-        formatter = { command = "${editorDeps}/bin/dprint"; args = ["fmt" "--stdin" "md"]; };
+        formatter = {
+          command = "${editorDeps}/bin/dprint";
+          args = [
+            "fmt"
+            "--stdin"
+            "md"
+          ];
+        };
       };
 
       go = {
         autoFormat = true;
-        formatter = { command = "${editorDeps}/bin/goimports"; };
+        formatter = {
+          command = "${editorDeps}/bin/goimports";
+        };
         languageServers = [
-          { name = "gopls"; command = "${editorDeps}/bin/gopls"; }
-          { name = "golangci-lint-langserver"; command = "${editorDeps}/bin/golangci-lint-langserver"; }
+          {
+            name = "gopls";
+            command = "${editorDeps}/bin/gopls";
+          }
+          {
+            name = "golangci-lint-langserver";
+            command = "${editorDeps}/bin/golangci-lint-langserver";
+          }
         ];
       };
 
       bash = {
         languageServers = [
-          { name = "bash-language-server"; command = "${editorDeps}/bin/bash-language-server"; }
+          {
+            name = "bash-language-server";
+            command = "${editorDeps}/bin/bash-language-server";
+          }
         ];
-        formatter = { command = "${editorDeps}/bin/shfmt"; };
+        formatter = {
+          command = "${editorDeps}/bin/shfmt";
+        };
       };
 
       nix = {
         languageServers = [
-          { name = "nixd"; command = "${editorDeps}/bin/nixd"; }
+          {
+            name = "nixd";
+            command = "${editorDeps}/bin/nixd";
+          }
         ];
-        formatter = { command = "${editorDeps}/bin/nixfmt"; };
+        formatter = {
+          command = "${editorDeps}/bin/nixfmt";
+        };
       };
 
       yaml = {
         languageServers = [
-          { name = "yaml-language-server"; command = "${editorDeps}/bin/yaml-language-server"; }
-          { name = "ansible-language-server"; command = "${editorDeps}/bin/ansible-language-server"; }
+          {
+            name = "yaml-language-server";
+            command = "${editorDeps}/bin/yaml-language-server";
+          }
+          {
+            name = "ansible-language-server";
+            command = "${editorDeps}/bin/ansible-language-server";
+          }
         ];
-        formatter = { command = "${editorDeps}/bin/yamlfmt"; args = ["-"]; };
+        formatter = {
+          command = "${editorDeps}/bin/yamlfmt";
+          args = [ "-" ];
+        };
       };
     };
   };
@@ -387,7 +590,11 @@ in
     enableDefaultConfig = false;
     matchBlocks =
       let
-        opagent = "\"~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock\"";
+        opagent =
+          if isDarwin then
+            "\"${config.home.homeDirectory}/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock\""
+          else
+            "${config.home.homeDirectory}/.1password/agent.sock";
       in
       {
         "*" = {
