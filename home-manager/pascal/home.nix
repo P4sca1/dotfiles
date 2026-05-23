@@ -2,6 +2,7 @@
 let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
+  isWSL = args.isWSL;
 
   # Common dependencies for editors, such as language servers or formatters.
   editorDeps = pkgs.buildEnv {
@@ -64,7 +65,7 @@ in
     pnpm
     nodejs
     just
-  ] ++ (if !args.isWSL then [
+  ] ++ (if !isWSL then [
     # GUI apps
     slack
   ] else [
@@ -77,7 +78,7 @@ in
 
   home.sessionVariables = {
     EDITOR = "hx";
-    BROWSER = lib.mkIf args.isWSL "wslview";
+    BROWSER = lib.mkIf isWSL "wslview";
   };
 
   home.shellAliases = {
@@ -187,12 +188,12 @@ in
         name = "Pascal Sthamer";
       };
       init.defaultBranch = "main";
-      core = lib.mkIf args.isWSL {
+      core = lib.mkIf isWSL {
         # Use ssh from windows, so that 1Password SSH integration can be used.
         sshCommand = "ssh.exe";
       };
       gpg.ssh = {
-        program = if args.isWSL then "/mnt/c/Users/mower/AppData/Local/Microsoft/WindowsApps/op-ssh-sign-wsl.exe" else "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        program = if isWSL then "/mnt/c/Users/mower/AppData/Local/Microsoft/WindowsApps/op-ssh-sign-wsl.exe" else "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
       };
     };
     signing = {

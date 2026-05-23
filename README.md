@@ -1,39 +1,31 @@
-# dotfiles
-
-Pascal's dotfiles - managed using chezmoi (WIP)
-
-chezmoi docs: https://www.chezmoi.io/user-guide/command-overview/
-
-
-## Features
-
-- Helix configuration
-- Automatic package installation using brew (MacOS)
-
+# P4sca1's Nix config
 
 ## Prerequisites
 
-- chezmoi installed
+You need to have the nix package manager installed. See https://nixos.org/download/ for instructions.
+[Lix](https://lix.systems/install/) also works.
 
-### Darwin (MacOS)
+## Initial installation
 
-- brew installed
+```sh
+git clone git@github.com:P4sca1/nix.git
 
-### Windows
+# NixOS
+sudo nixos-rebuild switch --flake /path/to/dotfiles/nix#pascal-pc
 
-- WIP
+# MacOS
+sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake /path/to/dotfiles/nix#pascal-mbp
+```
 
+## Useful commands
 
-## Setup a new machine with a single command
+```sh
+# Update flake lock file
+nix flake update
 
-`chezmoi init --apply https://github.com/P4sca1/dotfiles.git`
+# NixOS: Rebuild and switch to new configuration
+sudo darwin-rebuild switch --flake /path/to/dotfiles/nix#pascal-pc
 
-
-## Helix configuration
-
-### Dependencies
-
-Helix requires language servers and tools like formatters to be installed and available in $PATH.
-Dependencies that are available on NPM are managed using a `package.json` in `dot_config/helix/package.json`.
-Versions of dependencies are fixed and need to be updated manually.
-Use `pnpm install --lockfile-only` after updating `package.json` to generate an updated `pnpm-lock.yaml`.
+# MacOS: Rebuild and switch to new configuration
+sudo darwin-rebuild switch --flake /path/to/dotfiles/nix#pascal-mbp
+```
