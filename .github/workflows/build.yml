@@ -1,0 +1,42 @@
+name: Build NixOS and Darwin Configurations
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-nixos:
+    name: Build NixOS (pascal-pc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build NixOS configuration
+        run: nix build .#nixosConfigurations.pascal-pc.config.system.build.toplevel
+
+  build-darwin-x86:
+    name: Build Darwin x86_64 (pascal-mbp)
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build Darwin configuration
+        run: nix build .#darwinConfigurations.pascal-mbp.system
+
+  build-darwin-aarch64:
+    name: Build Darwin aarch64 (pascal-mbp-procyde)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build Darwin configuration
+        run: nix build .#darwinConfigurations.pascal-mbp-procyde.system
