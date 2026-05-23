@@ -11,10 +11,10 @@ You need to have the nix package manager installed. See https://nixos.org/downlo
 git clone git@github.com:P4sca1/nix.git
 
 # NixOS
-sudo nixos-rebuild switch --flake /path/to/dotfiles/nix#pascal-pc
+sudo nixos-rebuild switch --flake /path/to/P4sca1/nix#pascal-pc
 
 # MacOS
-sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake /path/to/dotfiles/nix#pascal-mbp
+sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake /path/to/P4sca1/nix#pascal-mbp
 ```
 
 ## Useful commands
@@ -24,8 +24,8 @@ sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- sw
 nix flake update
 
 # NixOS: Rebuild and switch to new configuration
-sudo darwin-rebuild switch --flake /path/to/dotfiles/nix#pascal-pc
+sudo darwin-rebuild switch --flake /path/to/P4sca1/nix#pascal-pc
 
 # MacOS: Rebuild and switch to new configuration
-sudo darwin-rebuild switch --flake /path/to/dotfiles/nix#pascal-mbp
+sudo darwin-rebuild switch --flake /path/to/P4sca1/nix#pascal-mbp
 ```
