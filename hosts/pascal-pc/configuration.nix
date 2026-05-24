@@ -183,14 +183,18 @@ in
   # $ nix search wget
   environment.systemPackages =
     let
-      gamescope-steam = pkgs.writeShellScriptBin "gamescope-steam" (
-        builtins.readFile ./gamescope-steam.sh
+      moonlight-steam-start = pkgs.writeShellScriptBin "moonlight-steam-start" (
+        builtins.readFile ./moonlight-steam-start.sh
+      );
+      moonlight-steam-stop = pkgs.writeShellScriptBin "moonlight-steam-stop" (
+        builtins.readFile ./moonlight-steam-stop.sh
       );
     in
     with pkgs;
     [
       mangohud
-      gamescope-steam
+      moonlight-steam-start
+      moonlight-steam-stop
       pciutils
       vulkan-tools
     ];
@@ -207,8 +211,8 @@ in
           name = "Steam";
           prep-cmd = [
             {
-              do = "kscreen-doctor output.DP-1.mode.1920x1080@60 && sudo -u pascal setsid steam gamescope-steam steam://open/bigpicture";
-              undo = "kscreen-doctor output.DP-1.mode.3840x1600@75 && sudo -u pascal setsid steam steam://close/bigpicture";
+              do = "moonlight-steam-start";
+              undo = "moonlight-steam-stop";
             }
           ];
           exclude-global-prep-cmd = "false";

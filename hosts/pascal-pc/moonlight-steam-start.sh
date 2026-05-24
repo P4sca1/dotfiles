@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -xeuo pipefail
 
+kscreen-doctor output.DP-1.mode.1920x1080@60
+
 gamescopeArgs=(
     --adaptive-sync # VRR support
     --hdr-enabled
@@ -13,7 +15,6 @@ gamescopeArgs=(
 )
 steamArgs=(
     -pipewire-dmabuf
-    -tenfoot
 )
 mangoConfig=(
     cpu_temp
@@ -27,4 +28,5 @@ mangoVars=(
 )
 
 export "${mangoVars[@]}"
-exec gamescope "${gamescopeArgs[@]}" -- steam "${steamArgs[@]}" "$@"
+
+gamescope "${gamescopeArgs[@]}" -- steam "${steamArgs[@]}" steam://open/bigpicture
