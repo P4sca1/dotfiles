@@ -146,6 +146,7 @@ in
       "onepassword-password-manager" # firefox extension
       "steam"
       "steam-unwrapped"
+      "xow_dongle-firmware" # XBox Controller
     ];
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -154,9 +155,17 @@ in
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    mangohud
-  ];
+  environment.systemPackages =
+    let
+      gamescope-steam = pkgs.writeShellScriptBin "gamescope-steam" (
+        builtins.readFile ./gamescope-steam.sh
+      );
+    in
+    with pkgs;
+    [
+      mangohud
+      gamescope-steam
+    ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -176,7 +185,7 @@ in
       apps = [
         {
           name = "Steam";
-           prep-cmd = [
+          prep-cmd = [
             {
               do = "${pkgs.gamescope}/bin/gamescope -w 1920 -h 1080 -r 60 -- ${pkgs.steam}/bin/steam -gamepadui";
               undo = "pkill gamescope";
