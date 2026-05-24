@@ -7,8 +7,8 @@ gamescopeArgs=(
     --mangoapp # performance overlay
     --rt
     --steam
-    -w 1920
-    -h 1080
+    -W 1920
+    -H 1080
     -r 60
 )
 steamArgs=(
