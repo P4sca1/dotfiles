@@ -205,8 +205,8 @@ in
       apps = [
         {
           name = "Steam";
-          deteched = [
-            "sudo -u pascal setsid steam steam://open/bigpicture"
+          detached = [
+            "sudo -u pascal setsid steam gamescope-steam steam://open/bigpicture"
           ];
           prep-cmd = [
             {
