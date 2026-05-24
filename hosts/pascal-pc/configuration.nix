@@ -207,8 +207,8 @@ in
           name = "Steam";
           prep-cmd = [
             {
-              do = "sudo -u pascal setsid steam gamescope-steam steam://open/bigpicture";
-              undo = "sudo -u pascal setsid steam steam://close/bigpicture";
+              do = "kscreen-doctor output.DP-1.mode.1920x1080@60 && sudo -u pascal setsid steam gamescope-steam steam://open/bigpicture";
+              undo = "kscreen-doctor output.DP-1.mode.3840x1600@75 && sudo -u pascal setsid steam steam://close/bigpicture";
             }
           ];
           exclude-global-prep-cmd = "false";
