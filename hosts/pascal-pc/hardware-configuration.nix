@@ -61,7 +61,9 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
+    powerManagement.enable = true;
     open = false; # Use unfree kernel driver for improved game support;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];

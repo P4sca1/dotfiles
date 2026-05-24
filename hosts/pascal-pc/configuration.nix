@@ -123,11 +123,18 @@ in
   programs.steam = {
     enable = true;
     package = pkgs.steam;
-    gamescopeSession.enable = true;
+    gamescopeSession = {
+      enable = true;
+      env = {
+        PROTON_USE_NTSYNC = "1";
+      };
+    };
     extraCompatPackages = with pkgs; [
       # Proton GE for improved game support
       proton-ge-bin
     ];
+    localNetworkGameTransfers.openFirewall = true;
+    remotePlay.openFirewall = true;
   };
 
   programs.gamescope = {
@@ -184,40 +191,32 @@ in
     [
       mangohud
       gamescope-steam
+      pciutils
+      vulkan-tools
     ];
-
-  environment.sessionVariables = {
-    PROTON_USE_NTSYNC = "1";
-    ENABLE_GAMESCOPE_WSI = "1";
-    STEAM_MULTIPLE_XWAYLANDS = "1";
-  };
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
 
   services.sunshine = {
     enable = true;
     package = pkgs.sunshine;
+    openFirewall = true;
     autoStart = true;
+    capSysAdmin = true;
     applications = {
       apps = [
         {
           name = "Steam";
+          deteched = [
+            "sudo -u pascal setsid steam steam://open/bigpicture"
+          ];
           prep-cmd = [
             {
-              do = "${pkgs.gamescope}/bin/gamescope -w 1920 -h 1080 -r 60 -- ${pkgs.steam}/bin/steam -gamepadui";
-              undo = "pkill gamescope";
+              do = "sudo -u pascal setsid steam gamescope-steam steam://open/bigpicture";
+              undo = "sudo -u pascal setsid steam steam://close/bigpicture";
             }
           ];
           exclude-global-prep-cmd = "false";
           auto-detach = "true";
+          image-path = "steam.png";
         }
       ];
     };
@@ -233,10 +232,7 @@ in
   };
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -245,5 +241,4 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
-
 }
