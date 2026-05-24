@@ -195,17 +195,28 @@ in
       "de"
       "en-US"
     ];
+    nativeMessagingHosts = [
+      pkgs.kdePackages.plasma-browser-integration
+    ];
     profiles = {
       "pascal" = {
         isDefault = true;
         extensions = {
-          packages = with pkgs.nur.repos.rycee.firefox-addons; [
-            onepassword-password-manager
-            ublock-origin
-            bypass-paywalls-clean
-            auto-reject-cookies
-            vue-js-devtools
-          ];
+          packages =
+          let
+            sharedAddons =  with pkgs.nur.repos.rycee.firefox-addons; [
+              onepassword-password-manager
+              ublock-origin
+              bypass-paywalls-clean
+              auto-reject-cookies
+              vue-js-devtools
+            ];
+            linuxAddons = with pkgs.nur.repos.rycee.firefox-addons; [
+              plasma-integration
+            ];
+            darwinAddons = [];
+          in
+            sharedAddons ++ lib.optionals isLinux linuxAddons ++ lib.optionals isDarwin darwinAddons;
         };
         bookmarks = {
           force = true;
@@ -295,6 +306,16 @@ in
   programs.firefoxpwa = {
     enable = isLinux;
     package = pkgs.firefoxpwa;
+  };
+
+  programs.thunderbird = {
+    enable = isLinux;
+    package = pkgs.thunderbird;
+    profiles = {
+      pascal = {
+        isDefault = true;
+      };
+    };
   };
 
   programs.fzf = {
