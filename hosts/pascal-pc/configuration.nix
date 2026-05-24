@@ -27,6 +27,12 @@ in
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  boot.kernelModules = [
+    # ntsync is a kernel driver that mimics Windows synchronization mechanisms, significantly improving performance
+    # for running Windows applications, especially games, through compatibility layers like Wine and Proton
+    "ntsync"
+  ];
+
   networking.hostName = "pascal-pc"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -118,6 +124,19 @@ in
     enable = true;
     package = pkgs.steam;
     gamescopeSession.enable = true;
+    extraCompatPackages = with pkgs; [
+      # Proton GE for improved game support
+      proton-ge-bin
+    ];
+  };
+
+  programs.gamescope = {
+    enable = true;
+    package = pkgs.gamescope;
+    # Creates /run/wrappers/bin/gamescope with cap_sys_nice capability.
+    # Required for Steam to function inside gamescope.
+    # Also sets security.wrappers.bwrap with setuid.
+    capSysNice = true;
   };
 
   programs.gamemode.enable = true;
@@ -166,6 +185,12 @@ in
       mangohud
       gamescope-steam
     ];
+
+  environment.sessionVariables = {
+    PROTON_USE_NTSYNC = "1";
+    ENABLE_GAMESCOPE_WSI = "1";
+    STEAM_MULTIPLE_XWAYLANDS = "1";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
