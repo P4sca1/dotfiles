@@ -111,6 +111,7 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
+      "gamemode" # https://wiki.nixos.org/wiki/GameMode
     ];
     shell = pkgs.zsh;
     home = "/home/pascal";
@@ -140,10 +141,27 @@ in
   programs.gamescope = {
     enable = true;
     package = pkgs.gamescope;
-    # Creates /run/wrappers/bin/gamescope with cap_sys_nice capability.
-    # Required for Steam to function inside gamescope.
-    # Also sets security.wrappers.bwrap with setuid.
-    capSysNice = true;
+    capSysNice = false;
+    args = [
+      "--rt"
+      "--expose-wayland"
+      "--force-grab-cursor"
+      "--adaptive-sync"
+      "--fullscreen"
+    ];
+  };
+
+  # https://github.com/NixOS/nixpkgs/issues/351516#issuecomment-2607156591
+  services.ananicy = {
+    enable = true;
+    package = pkgs.ananicy-cpp;
+    rulesProvider = pkgs.ananicy-cpp;
+    extraRules = [
+      {
+        "name" = "gamescope";
+        "nice" = -20;
+      }
+    ];
   };
 
   programs.gamemode.enable = true;
@@ -198,6 +216,11 @@ in
       pciutils
       vulkan-tools
     ];
+
+  environment.sessionVariables = {
+    # Enable Mango HUD for all vulkan games by default.
+    "MANGOHUD" = 1;
+  };
 
   services.sunshine = {
     enable = true;
