@@ -111,6 +111,95 @@ in
 
   xdg.enable = true;
 
+  accounts.email.accounts = {
+    "pascal@sthamer.xyz" = {
+      primary = true;
+      address = "pascal@sthamer.xyz";
+      realName = "Pascal Sthamer";
+      userName = "pascal@sthamer.xyz";
+      thunderbird = {
+        enable = true;
+        profiles = [ "pascal" ];
+      };
+      imap = {
+        host = "mail.ips-hosting.com";
+        port = 993;
+        tls.enable = true;
+      };
+      smtp = {
+        host = "mail.ips-hosting.com";
+        port = 465;
+        tls.enable = true;
+      };
+    };
+
+    "sthamer.pascal@gmail.com" = {
+      address = "sthamer.pascal@gmail.com";
+      realName = "Pascal Sthamer";
+      userName = "sthamer.pascal@gmail.com";
+      thunderbird = {
+        enable = true;
+        profiles = [ "pascal" ];
+      };
+      flavor = "gmail.com";
+    };
+
+    "pascal.sthamer@ips-hosting.com" = {
+      address = "pascal.sthamer@ips-hosting.com";
+      realName = "Pascal Sthamer";
+      userName = "pascal.sthamer@ips-hosting.com";
+      thunderbird = {
+        enable = true;
+        profiles = [ "pascal" ];
+      };
+      imap = {
+        host = "mail.ips-hosting.com";
+        port = 993;
+        tls.enable = true;
+      };
+      smtp = {
+        host = "mail.ips-hosting.com";
+        port = 465;
+        tls.enable = true;
+      };
+    };
+
+    "pascal.sthamer@einfach-gaming.de" = {
+      address = "pascal.sthamer@einfach-gaming.de";
+      realName = "Pascal Sthamer";
+      userName = "pascal.sthamer@einfach-gaming.de";
+      thunderbird = {
+        enable = true;
+        profiles = [ "pascal" ];
+      };
+      imap = {
+        host = "mail.ips-hosting.com";
+        port = 993;
+        tls.enable = true;
+      };
+      smtp = {
+        host = "mail.ips-hosting.com";
+        port = 465;
+        tls.enable = true;
+      };
+    };
+  };
+
+  accounts.calendar.accounts = {
+    "pascal@sthamer.xyz" = {
+      primary = true;
+      remote = {
+        type = "caldav";
+        url = "https://mail.ips-hosting.com/dav/cal/pascal@sthamer.xyz";
+        userName = "pascal@sthamer.xyz";
+      };
+      thunderbird = {
+        enable = true;
+        profiles = [ "pascal" ];
+      };
+    };
+  };
+
   programs.aerospace = lib.mkIf isDarwin {
     enable = true;
     package = pkgs.aerospace;
@@ -203,19 +292,19 @@ in
         isDefault = true;
         extensions = {
           packages =
-          let
-            sharedAddons =  with pkgs.nur.repos.rycee.firefox-addons; [
-              onepassword-password-manager
-              ublock-origin
-              bypass-paywalls-clean
-              auto-reject-cookies
-              vue-js-devtools
-            ];
-            linuxAddons = with pkgs.nur.repos.rycee.firefox-addons; [
-              plasma-integration
-            ];
-            darwinAddons = [];
-          in
+            let
+              sharedAddons = with pkgs.nur.repos.rycee.firefox-addons; [
+                onepassword-password-manager
+                ublock-origin
+                bypass-paywalls-clean
+                auto-reject-cookies
+                vue-js-devtools
+              ];
+              linuxAddons = with pkgs.nur.repos.rycee.firefox-addons; [
+                plasma-integration
+              ];
+              darwinAddons = [ ];
+            in
             sharedAddons ++ lib.optionals isLinux linuxAddons ++ lib.optionals isDarwin darwinAddons;
         };
         bookmarks = {
@@ -301,11 +390,6 @@ in
         };
       };
     };
-  };
-
-  programs.firefoxpwa = {
-    enable = isLinux;
-    package = pkgs.firefoxpwa;
   };
 
   programs.thunderbird = {

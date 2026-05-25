@@ -237,8 +237,8 @@ in
           name = "Steam";
           prep-cmd = [
             {
-              do = "moonlight-steam-start";
-              undo = "moonlight-steam-stop";
+              do = "sudo -u pascal setsid moonlight-steam-start";
+              undo = "sudo -u pascal moonlight-steam-stop";
             }
           ];
           exclude-global-prep-cmd = "false";
