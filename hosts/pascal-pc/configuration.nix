@@ -144,9 +144,14 @@ in
     capSysNice = false;
     args = [
       "--rt"
+      "--mangoapp"
       "--expose-wayland"
       "--force-grab-cursor"
       "--adaptive-sync"
+      "--output-width 3840"
+      "--nested-width 3840"
+      "--output-height 1600"
+      "--nested-height 1600"
       "--fullscreen"
     ];
   };
@@ -218,8 +223,6 @@ in
     ];
 
   environment.sessionVariables = {
-    # Enable Mango HUD for all vulkan games by default.
-    "MANGOHUD" = 1;
   };
 
   services.sunshine = {
