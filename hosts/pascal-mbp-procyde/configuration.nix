@@ -16,6 +16,7 @@ let
     builtins.elem (pkgs.lib.getName pkg) [
       "slack"
       "orbstack"
+      "onepassword-password-manager" # firefox extension
     ];
   # eurKeyBundle = pkgs.stdenv.mkDerivation {
   #   name = "EurKEY-Next";

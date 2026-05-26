@@ -74,14 +74,14 @@ in
         nodejs
         just
       ];
-      linuxPackages = with pkgs; [
-      ];
-      darwinPackages = with pkgs; [
+      linuxPackages = lib.optionals isLinux (with pkgs; [
+      ]);
+      darwinPackages = lib.optionals isDarwin (with pkgs; [
         # GUI apps
         slack
-      ];
+      ]);
     in
-    sharedPackages ++ lib.optionals isLinux linuxPackages ++ lib.optionals isDarwin darwinPackages;
+    sharedPackages ++ linuxPackages ++ darwinPackages;
 
   home.sessionPath = [
     # Ensure all editor tooling is in PATH, so that vscodium can access language servers and other tooling.
@@ -284,7 +284,7 @@ in
       "de"
       "en-US"
     ];
-    nativeMessagingHosts = [
+    nativeMessagingHosts = lib.mkIf isLinux [
       pkgs.kdePackages.plasma-browser-integration
     ];
     profiles = {
@@ -300,12 +300,12 @@ in
                 auto-reject-cookies
                 vue-js-devtools
               ];
-              linuxAddons = with pkgs.nur.repos.rycee.firefox-addons; [
+              linuxAddons = lib.optionals isLinux (with pkgs.nur.repos.rycee.firefox-addons; [
                 plasma-integration
-              ];
-              darwinAddons = [ ];
+              ]);
+              darwinAddons = lib.optionals isDarwin ([ ]);
             in
-            sharedAddons ++ lib.optionals isLinux linuxAddons ++ lib.optionals isDarwin darwinAddons;
+            sharedAddons ++ linuxAddons ++ darwinAddons;
         };
         bookmarks = {
           force = true;
