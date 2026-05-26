@@ -77,6 +77,7 @@ in
       linuxPackages = lib.optionals isLinux (
         with pkgs;
         [
+          nextcloud-client
         ]
       );
       darwinPackages = lib.optionals isDarwin (
