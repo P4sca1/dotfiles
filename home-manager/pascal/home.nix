@@ -74,12 +74,18 @@ in
         nodejs
         just
       ];
-      linuxPackages = lib.optionals isLinux (with pkgs; [
-      ]);
-      darwinPackages = lib.optionals isDarwin (with pkgs; [
-        # GUI apps
-        slack
-      ]);
+      linuxPackages = lib.optionals isLinux (
+        with pkgs;
+        [
+        ]
+      );
+      darwinPackages = lib.optionals isDarwin (
+        with pkgs;
+        [
+          # GUI apps
+          slack
+        ]
+      );
     in
     sharedPackages ++ linuxPackages ++ darwinPackages;
 
@@ -278,34 +284,27 @@ in
   };
 
   programs.firefox = {
-    enable = true;
+    enable = isLinux;
     package = pkgs.firefox;
     languagePacks = [
       "de"
       "en-US"
     ];
-    nativeMessagingHosts = lib.mkIf isLinux [
+    nativeMessagingHosts = [
       pkgs.kdePackages.plasma-browser-integration
     ];
     profiles = {
       "pascal" = {
         isDefault = true;
         extensions = {
-          packages =
-            let
-              sharedAddons = with pkgs.nur.repos.rycee.firefox-addons; [
-                onepassword-password-manager
-                ublock-origin
-                bypass-paywalls-clean
-                auto-reject-cookies
-                vue-js-devtools
-              ];
-              linuxAddons = lib.optionals isLinux (with pkgs.nur.repos.rycee.firefox-addons; [
-                plasma-integration
-              ]);
-              darwinAddons = lib.optionals isDarwin ([ ]);
-            in
-            sharedAddons ++ linuxAddons ++ darwinAddons;
+          packages = with pkgs.nur.repos.rycee.firefox-addons; [
+            onepassword-password-manager
+            ublock-origin
+            bypass-paywalls-clean
+            auto-reject-cookies
+            vue-js-devtools
+            plasma-integration
+          ];
         };
         bookmarks = {
           force = true;
