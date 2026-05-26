@@ -125,7 +125,7 @@ in
     enable = true;
     package = pkgs.steam;
     gamescopeSession = {
-      enable = true;
+      enable = false;
       env = {
         PROTON_USE_NTSYNC = "1";
       };
@@ -139,7 +139,7 @@ in
   };
 
   programs.gamescope = {
-    enable = true;
+    enable = false;
     package = pkgs.gamescope;
     capSysNice = false;
     args = [
@@ -147,7 +147,6 @@ in
       "--mangoapp"
       "--expose-wayland"
       "--force-grab-cursor"
-      "--adaptive-sync"
       "--output-width 3840"
       "--nested-width 3840"
       "--output-height 1600"
