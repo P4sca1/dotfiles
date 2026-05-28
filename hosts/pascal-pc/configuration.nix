@@ -236,7 +236,7 @@ in
           name = "Steam";
           prep-cmd = [
             {
-              do = "sudo -u pascal setsid moonlight-steam-start";
+              do = "sudo -u pascal moonlight-steam-start";
               undo = "sudo -u pascal moonlight-steam-stop";
             }
           ];

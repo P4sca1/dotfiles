@@ -112,6 +112,13 @@ in
   #   source = "${eurKeyBundle}/EurKEY-Next.bundle";
   # };
 
+  # https://wiki.archlinux.org/title/Steam#Faster_shader_pre-compilation
+  home.file.".steam/steam/steam_dev.cfg" = lib.mkIf isLinux {
+    text = ''
+      @ShaderBackgroundProcessingThreads 12
+    '';
+  };
+
   # The state version is required and should stay at the version you
   # originally installed.
   home.stateVersion = "25.11";
