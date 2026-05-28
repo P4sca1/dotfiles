@@ -203,23 +203,11 @@ in
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages =
-    let
-      moonlight-steam-start = pkgs.writeShellScriptBin "moonlight-steam-start" (
-        builtins.readFile ./moonlight-steam-start.sh
-      );
-      moonlight-steam-stop = pkgs.writeShellScriptBin "moonlight-steam-stop" (
-        builtins.readFile ./moonlight-steam-stop.sh
-      );
-    in
-    with pkgs;
-    [
-      mangohud
-      moonlight-steam-start
-      moonlight-steam-stop
-      pciutils
-      vulkan-tools
-    ];
+  environment.systemPackages = with pkgs; [
+    mangohud
+    pciutils
+    vulkan-tools
+  ];
 
   environment.sessionVariables = {
   };
@@ -236,13 +224,21 @@ in
           name = "Steam";
           prep-cmd = [
             {
-              do = "sudo -u pascal moonlight-steam-start";
-              undo = "sudo -u pascal moonlight-steam-stop";
+              do = "sudo -u pascal steam -pipewire-dmabuf steam://open/bigpicture";
+              undo = "sudo -u pascal steam steam://close/bigpicture";
             }
           ];
           exclude-global-prep-cmd = "false";
           auto-detach = "true";
           image-path = "steam.png";
+        }
+      ];
+    };
+    settings = {
+      global_prep_cmd = builtins.toJSON [
+        {
+          do = "kscreen-doctor output.DP-1.mode.1920x1080@60";
+          undo = "kscreen-doctor output.DP-1.mode.3840x1600@75";
         }
       ];
     };
