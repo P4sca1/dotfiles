@@ -69,4 +69,5 @@
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.xpadneo.enable = true;
+  hardware.keyboard.uhk.enable = true;
 }

@@ -71,8 +71,7 @@ in
 
   # Configure keymap in X11
   services.xserver.xkb = {
-    layout = "us";
-    variant = "";
+    layout = "eu";
   };
 
   # Enable CUPS to print documents.
@@ -112,6 +111,7 @@ in
       "networkmanager"
       "wheel"
       "gamemode" # https://wiki.nixos.org/wiki/GameMode
+      "input"
     ];
     shell = pkgs.zsh;
     home = "/home/pascal";
@@ -195,6 +195,8 @@ in
       "onepassword-password-manager" # firefox extension
       "steam"
       "steam-unwrapped"
+      "uhk-agent"
+      "uhk-udev-rules"
     ];
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -206,6 +208,7 @@ in
   environment.systemPackages = with pkgs; [
     mangohud
     pciutils
+    uhk-agent
     vulkan-tools
   ];
 

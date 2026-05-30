@@ -110,6 +110,7 @@ in
   # https://wiki.archlinux.org/title/Steam#Faster_shader_pre-compilation
   home.file.".steam/steam/steam_dev.cfg" = lib.mkIf isLinux {
     text = ''
+      unShaderBackgroundProcessingThreads 12
       @ShaderBackgroundProcessingThreads 12
     '';
   };
