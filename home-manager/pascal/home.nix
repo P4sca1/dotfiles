@@ -13,30 +13,30 @@ let
   # Common dependencies for editors, such as language servers or formatters.
   editorDeps = pkgs.buildEnv {
     name = "editor-deps";
-    paths = [
+    paths = with pkgs; [
       # Languages
-      pkgs.go # required by the go vscode extension
+      go # required by the go vscode extension
 
       # Language Servers
-      pkgs.typescript-language-server
-      pkgs.vscode-langservers-extracted
-      pkgs.tailwindcss-language-server
-      pkgs.bash-language-server
-      pkgs.gopls
-      pkgs.golangci-lint-langserver
-      pkgs.nixd
-      pkgs.yaml-language-server
-      nixpkgs-unstable.ansible-language-server # not in 25.11 yet
+      typescript-language-server
+      vscode-langservers-extracted
+      tailwindcss-language-server
+      bash-language-server
+      gopls
+      golangci-lint-langserver
+      nixd
+      yaml-language-server
+      ansible-language-server
 
       # Formatters / Linters
-      pkgs.biome
-      pkgs.prettier
-      pkgs.shfmt
-      pkgs.golangci-lint
-      pkgs.nixfmt
-      pkgs.yamlfmt
-      pkgs.yamllint
-      pkgs.ansible-lint
+      biome
+      prettier
+      shfmt
+      golangci-lint
+      nixfmt
+      yamlfmt
+      yamllint
+      ansible-lint
     ];
   };
 in
@@ -45,7 +45,7 @@ in
     let
       sharedPackages = with pkgs; [
         # Dev / Nix tools
-        nixpkgs-unstable.devenv # we need at least devenv version 2, which is not part of nixos 25.11
+        devenv
         nix-init
         nixd
         nixfmt
@@ -62,7 +62,6 @@ in
         manifest-tool
         minio-client
         regclient
-        nixpkgs-unstable.zarf
 
         # CLI utilities
         gh
@@ -107,10 +106,6 @@ in
 
   # Hide last login message when opening a terminal
   home.file.".hushlogin".text = "";
-
-  # home.file."Library/Keyboard Layouts/EurKEY-Next.bundle" = {
-  #   source = "${eurKeyBundle}/EurKEY-Next.bundle";
-  # };
 
   # https://wiki.archlinux.org/title/Steam#Faster_shader_pre-compilation
   home.file.".steam/steam/steam_dev.cfg" = lib.mkIf isLinux {
@@ -267,11 +262,11 @@ in
   };
 
   # element from nixpkgs is not built using element call feature flags.
-  # We use the homebrew version instead for now
-  # programs.element-desktop = {
-  #   enable = true;
-  #   package = nixpkgs-unstable.element-desktop; # pkgs.element-desktop does not build as of now
-  # };
+  # We use the homebrew version instead for now on darwin
+  programs.element-desktop = {
+    enable = isLinux;
+    package = pkgs.element-desktop;
+  };
 
   programs.eza = {
     enable = true;
@@ -294,6 +289,7 @@ in
   programs.firefox = {
     enable = isLinux;
     package = pkgs.firefox;
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
     languagePacks = [
       "de"
       "en-US"
@@ -700,7 +696,7 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks =
+    settings =
       let
         opagent =
           if isDarwin then
@@ -710,28 +706,28 @@ in
       in
       {
         "*" = {
-          forwardAgent = false;
-          addKeysToAgent = "no";
-          compression = false;
-          serverAliveInterval = 0;
-          serverAliveCountMax = 3;
-          hashKnownHosts = false;
-          userKnownHostsFile = "~/.ssh/known_hosts";
-          controlMaster = "no";
-          controlPersist = "no";
-          identityAgent = opagent;
+          ForwardAgent = false;
+          AddKeysToAgent = "no";
+          Compression = false;
+          ServerAliveInterval = 0;
+          ServerAliveCountMax = 3;
+          HashKnownHosts = false;
+          UserKnownHostsFile = "~/.ssh/known_hosts";
+          ControlMaster = "no";
+          ControlPersist = "no";
+          IdentityAgent = opagent;
         };
         "*.teleport.*.*" = {
-          identityAgent = "none";
+          IdentityAgent = "none";
         };
         "*.ips-hosting.com" = {
-          user = "ips-hosting";
+          User = "ips-hosting";
         };
         "bwi-hetzner-dev" = {
-          user = "ubuntu";
-          hostname = "168.119.73.177";
-          port = 2221;
-          localForwards = [
+          User = "ubuntu";
+          Hostname = "168.119.73.177";
+          Port = 2221;
+          LocalForward = [
             {
               bind.port = 30080;
               host.address = "localhost";
@@ -828,7 +824,7 @@ in
     '';
   };
 
-  programs.vscode = {
+  programs.vscodium = {
     enable = true;
     package = pkgs.vscodium;
     mutableExtensionsDir = false;
@@ -898,4 +894,5 @@ in
   };
 
   programs.zsh.enable = true;
+  programs.zsh.dotDir = "${config.xdg.configHome}/zsh";
 }

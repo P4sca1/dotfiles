@@ -18,26 +18,6 @@ let
       "orbstack"
       "onepassword-password-manager" # firefox extension
     ];
-  # eurKeyBundle = pkgs.stdenv.mkDerivation {
-  #   name = "EurKEY-Next";
-
-  #   src = inputs.eurkey;
-
-  #   nativeBuildInputs = [ pkgs.python3 ];
-
-  #   buildPhase = ''
-  #     WORKDIR=$(mktemp -d)
-  #     cp -r "$src"/* "$WORKDIR/"
-  #     cd "$WORKDIR"
-  #     bash scripts/build-bundle.sh
-  #     mkdir -p "$out"
-  #     mv "$WORKDIR/build/EurKEY-Next.bundle" "$out/"
-  #   '';
-
-  #   installPhase = ''
-  #     ls -la "$out/"
-  #   '';
-  # };
 in
 {
   # List packages installed in system profile. To search by name, run:

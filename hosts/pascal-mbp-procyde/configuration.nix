@@ -18,26 +18,6 @@ let
       "orbstack"
       "onepassword-password-manager" # firefox extension
     ];
-  # eurKeyBundle = pkgs.stdenv.mkDerivation {
-  #   name = "EurKEY-Next";
-
-  #   src = inputs.eurkey;
-
-  #   nativeBuildInputs = [ pkgs.python3 ];
-
-  #   buildPhase = ''
-  #     WORKDIR=$(mktemp -d)
-  #     cp -r "$src"/* "$WORKDIR/"
-  #     cd "$WORKDIR"
-  #     bash scripts/build-bundle.sh
-  #     mkdir -p "$out"
-  #     mv "$WORKDIR/build/EurKEY-Next.bundle" "$out/"
-  #   '';
-
-  #   installPhase = ''
-  #     ls -la "$out/"
-  #   '';
-  # };
 in
 {
   # List packages installed in system profile. To search by name, run:
@@ -55,9 +35,22 @@ in
     pkgs.nerd-fonts.jetbrains-mono
   ];
 
-  # Necessary for using flakes on this system.
-  nix.settings.experimental-features = "nix-command flakes";
-  nix.settings.trusted-users = [ "pascal" ];
+  nit.settings = {
+    # Necessary for using flakes on this system.
+    experimental-features = "nix-command flakes";
+    trusted-users = [ "pascal" ];
+    substituters = [
+      "https://cache.nixos.org/"
+      "https://nix-community.cachix.org"
+      "https://devenv.cachix.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
+    ];
+  };
+
   nix.linux-builder.enable = true;
   nix.gc.automatic = true;
 

@@ -189,12 +189,12 @@ in
     builtins.elem (pkgs.lib.getName pkg) [
       "1password"
       "1password-cli"
+      "nvidia-kernel-modules"
       "nvidia-settings"
       "nvidia-x11"
       "onepassword-password-manager" # firefox extension
       "steam"
       "steam-unwrapped"
-      "xow_dongle-firmware" # XBox Controller
     ];
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -238,7 +238,7 @@ in
       global_prep_cmd = builtins.toJSON [
         {
           do = "kscreen-doctor output.DP-1.mode.1920x1080@60";
-          undo = "kscreen-doctor output.DP-1.mode.3840x1600@75";
+          undo = "kscreen-doctjor output.DP-1.mode.3840x1600@75";
         }
       ];
     };
