@@ -251,7 +251,6 @@ in
   # Open ports in the firewall.
   networking.firewall.enable = true;
 
-  virtualisation.waydroid.enable = true; # Android virtualization
   virtualisation.podman.enable = true;
 
   # This value determines the NixOS release from which the default
