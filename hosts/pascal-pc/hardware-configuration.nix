@@ -65,9 +65,10 @@
     open = false; # Use unfree kernel driver for improved game support;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.xpadneo.enable = true;
   hardware.keyboard.uhk.enable = true;
+  hardware.logitech.wireless.enable = true;
+  hardware.logitech.wireless.enableGraphical = true;
 }
