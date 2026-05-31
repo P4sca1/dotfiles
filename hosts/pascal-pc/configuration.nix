@@ -33,22 +33,14 @@ in
     "ntsync"
   ];
 
-  networking.hostName = "pascal-pc"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
+  networking.hostName = "pascal-pc";
+  networking.wireless.enable = true;
   networking.networkmanager.enable = true;
+  networking.nftables.enable = true;
 
-  # Set your time zone.
   time.timeZone = "Europe/Berlin";
 
-  # Select internationalisation properties.
   i18n.defaultLocale = "de_DE.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "de_DE.UTF-8";
     LC_IDENTIFICATION = "de_DE.UTF-8";
@@ -258,6 +250,9 @@ in
 
   # Open ports in the firewall.
   networking.firewall.enable = true;
+
+  virtualisation.waydroid.enable = true; # Android virtualization
+  virtualisation.podman.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
